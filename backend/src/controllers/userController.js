@@ -16,20 +16,33 @@ export class UserController {
 
             return res.status(201).json({ success: true, message: 'Usuario creado' });
         } catch (err) {
-            console.log('ERROR RECIBIDO EN EL CONTROLADOR: ', err)
+            console.log('Error recibido en el controlador: ', err)
             next(err);
         }
     }
 
     async loginUser(req, res, next) {
         try {
-            const getUser = await this.service.getUser(req);
-            console.log(getUser)
-            if (!getUser) {
-                return res.status(404).json({ success: false, message: 'Credenciales incorrectas' });
+            console.log('La sesion del usuario es valida? ',req.logIn);
+            
+            if (req.logIn) {
+                return res.status(200).json({ logIn: true, message: 'El usuario ya esta logueado' });
             }
 
-            return res.json({ mensaje: 'se recibio' })
+            res.clearCookie('refresh_token');
+            res.clearCookie('acess_token');
+
+            const getUser = await this.service.getUser(req);
+            const { acessToken, refreshToken, ...userData } = getUser;
+
+            return res.status(200)
+                .cookie('refresh_token', refreshToken, {
+                    httpOnly: true, sameSite: 'Strict'
+                })
+                .cookie('acess_token', acessToken, {
+                    httpOnly: true, sameSite: 'Strict'
+                })
+                .json({ logIn: true, userData: userData.userLog })
         } catch (err) {
             next(err);
         }

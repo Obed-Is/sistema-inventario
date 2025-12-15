@@ -52,11 +52,11 @@ export class UserValidate {
         const { correo, contrasena } = campos;
 
         if (!correo || !contrasena || contrasena.length <= 0) {
-            return false;
+            return { valid: false, message: "Todos los campos son obligatorios" };
         } else if (!this.regexEmail.test(correo)) {
-            return false;
+            return { valid: false, message: "Correo electronico invalido" };
         }
 
-        return true;
+        return { valid: true };
     }
 }

@@ -6,7 +6,7 @@ export class UserModel {
 
     async createUserInDb(nombre, contrasena, correo, telefono, id_rol) {
         try {
-            return await this.db.execute(`
+            return this.db.execute(`
                 INSERT INTO usuarios (nombre, contraseña, correo, telefono, id_rol)
                 VALUES (?, ?, ?, ?, ?)`, [nombre, contrasena, correo, telefono, id_rol]);
         } catch (err) {
@@ -17,19 +17,18 @@ export class UserModel {
 
     async getUserFromDb(correo) {
         try {
-            return await this.db.query(`
-                SELECT u.nombre, u.contraseña, u.correo, u.estado, r.nombre_rol FROM usuarios u 
-                INNER JOIN roles r on r.id = u.id_rol WHERE u.correo = ?`, [correo]);
+            return this.db.query(`
+                SELECT u.id, u.nombre, u.contraseña, u.correo, u.estado, r.nombre_rol FROM usuarios u 
+                INNER JOIN roles r on r.id = u.id_rol WHERE u.correo = ? AND u.estado = 1`, [correo]);
         } catch (err) {
-            console.log('Error en obtener el usuarios de la base de datos: \n', err)
+            console.log('Error en obtener el usuarios de la base de datos al intentar loguearse: \n', err)
             throw err;
         }
     }
 
     async getIdByRol(nombre_rol) {
         try {
-            console.log(nombre_rol)
-            return await this.db.query('SELECT id FROM roles WHERE nombre_rol = ?', [nombre_rol]);
+            return this.db.query('SELECT id FROM roles WHERE nombre_rol = ?', [nombre_rol]);
         } catch (err) {
             console.log('Error al obtener el id del rol de la base de datos: \n', err)
             throw err;
@@ -38,9 +37,39 @@ export class UserModel {
 
     async userDuplicate(correo, telefono) {
         try {
-            return await this.db.query('SELECT id FROM usuarios WHERE correo = ? OR telefono = ?', [correo, telefono]);
+            return this.db.query('SELECT id FROM usuarios WHERE correo = ? OR telefono = ?', [correo, telefono]);
         } catch (err) {
             console.log('Error al buscar un usuario duplicado en la base de datos: \n', err);
+            throw err;
+        }
+    }
+
+    async setNewRefreshToken(id_usuario, token, expired) {
+        try {
+            return this.db.execute(`INSERT INTO refresh_token (token_hash, id_usuario, expired_at)
+            VALUES (?, ?, ?)`, [token, id_usuario, expired]);
+        } catch (err) {
+            console.log('Error al guardar el refresh token en la base de datos: \n', err);
+            throw err;
+        }
+    }
+
+    async getRefreshToken(id_usuario) {
+        try {
+            return this.db.query(`SELECT id, token_hash, expired_at FROM refresh_token WHERE id_usuario = ?`, [id_usuario]);
+        } catch (err) {
+            console.log('Error al obtener el token en la base de datos: \n', err);
+            throw err;
+        }
+    }
+
+    async updateRefreshToken(id_usuario, expired, token) {
+        try {
+            return this.db.execute(`UPDATE refresh_token SET token_hash = ?, expired_at = ? WHERE id_usuario = ?`,
+                [token, expired, id_usuario]
+            );
+        } catch (err) {
+            console.log('Error al actualizar el token en la base de datos: \n', err);
             throw err;
         }
     }

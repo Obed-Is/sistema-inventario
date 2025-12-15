@@ -22,3 +22,11 @@ export class DuplicateError extends Error{
         this.stack = false;
     }
 }
+
+export class TokenError extends Error{
+    constructor(message, status){
+        super(message),
+        this.status = status,
+        this.stack = false
+    }
+}
