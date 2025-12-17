@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node --watch ./src/app.js"
+    "dev": "nodemon ./src/app.js"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
     "mysql2": "^3.15.3"
   },
   "devDependencies": {
-    "morgan": "^1.10.1"
+    "morgan": "^1.10.1",
+    "nodemon": "^3.1.11"
   }
 }
