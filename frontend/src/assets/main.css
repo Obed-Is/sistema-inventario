@@ -1,0 +1,15 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+    --color-main: #47c269;
+    --muted-text: #2c455b;
+    --card-radius: 7px;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
+        0 4px 16px rgba(0, 0, 0, 0.08);
+    --border-color: #ffd0d0;
+}
