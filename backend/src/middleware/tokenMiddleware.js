@@ -24,6 +24,8 @@ export class TokenMiddleware {
         } catch (err) {
             if (err.message !== 'jwt expired') {
                 console.log('Error en el middleware de tokens: ', err)
+                res.clearCookie('acess_token');
+                res.clearCookie('refresh_token');
                 throw new TokenError('Ocurrio un error en los tokens', 500);
             }
             try {
