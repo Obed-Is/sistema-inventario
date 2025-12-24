@@ -16,4 +16,21 @@ export class UserApi {
             return { success: false };
         }
     }
+
+    async sessionStatus() {
+        try {
+            const response = await fetch('/api/user/auth/session', {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: "include",
+            });
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.log('Error en el fetch de comprobar la sesion: ', error)
+            return false;
+        }
+    }
 }
