@@ -11,7 +11,11 @@ const router = Router();
 const userController = new UserController(poolDatabase);
 const tokenMiddleware = new TokenMiddleware(poolDatabase);
 
-router.post('/create', (req, res, next) => userController.createUser(req, res, next))
+router.get('/auth/session', 
+    (req, res, next) => tokenMiddleware.userIsLog(req, res, next),
+    (req, res, next) => userController.userSession(req, res, next));
+
+router.post('/create', (req, res, next) => userController.createUser(req, res, next));
 router.post('/login', 
     (req, res, next) => tokenMiddleware.userIsLog(req, res, next),
     (req, res, next) => userController.loginUser(req, res, next));

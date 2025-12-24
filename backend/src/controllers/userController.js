@@ -23,8 +23,8 @@ export class UserController {
 
     async loginUser(req, res, next) {
         try {
-            console.log('La sesion del usuario es valida? ',req.logIn);
-            
+            console.log('La sesion del usuario es valida? ', req.logIn);
+
             if (req.logIn) {
                 return res.status(200).json({ logIn: true, message: 'El usuario ya esta logueado' });
             }
@@ -46,5 +46,12 @@ export class UserController {
         } catch (err) {
             next(err);
         }
+    }
+
+    userSession(req, res, next) {
+        if (req.logIn) {
+            return res.status(200).json({ logIn: true })
+        }
+        return res.status(401).json({ logIn: false })
     }
 }
