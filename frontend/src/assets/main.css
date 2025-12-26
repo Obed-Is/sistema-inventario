@@ -6,10 +6,34 @@
 }
 
 :root {
-    --color-main: #47c269;
-    --muted-text: #2c455b;
-    --card-radius: 7px;
-    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
-        0 4px 16px rgba(0, 0, 0, 0.08);
-    --border-color: #ffd0d0;
+    /* Colores principales */
+    --color-primary: #2c3e50;
+    --color-primary-light: #3b5168;
+    --color-primary-dark: #1a252f;
+
+    /* Colores de acento azulados */
+    --color-accent: #3498db;
+    --color-accent-light: #5dade2;
+    --color-accent-dark: #2980b9;
+
+    /* Colores neutrales */
+    --color-text: #2c3e50;
+    --color-text-light: #7f8c8d;
+    --color-border: #ecf0f1;
+    --color-background: #f8f9fa;
+    --color-white: #ffffff;
+
+    /* Estados */
+    --color-success: #2ecc71;
+    --color-warning: #f39c12;
+    --color-error: #e74c3c;
+    --color-info: #3498db;
+
+    /* Sombras */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    /* Tipografia */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }

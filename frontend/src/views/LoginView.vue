@@ -1,31 +1,36 @@
 <template>
-    <div class="layout">
-        <div class="container">
-            <section class="sect-header">
-                <LockIcon class="lock-icon" />
-                <div class="info-header">
-                    <h2>Sistema de <span>inventario</span></h2>
-                    <p class="data-header">Ingresa tus credenciales</p>
+    <div class="login-layout">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="login-icon-container">
+                        <LockIcon class="login-icon" />
+                    </div>
+                    <h1 class="login-title">Sistema de <span>inventario</span></h1>
+                    <p class="login-subtitle">Ingresa tus credenciales para continuar</p>
                 </div>
-            </section>
-            <section class="sect-content">
-                <div>
-                    <InputComponent :lbl="'Usuario'" v-model="correoInput" :type="'email'" :name="'correo'"
-                        :id="'correo'" :placeholder="'usuario@gmail.com'" :error="errores.correo">
+
+                <div class="login-form">
+                    <InputComponent :lbl="'Correo electrónico'" v-model="correoInput" type="email" name="correo"
+                        id="correo" :placeholder="'usuario@ejemplo.com'" :error="errores.correo" class="login-input">
                         <UserIcon class="input-icon" />
                     </InputComponent>
-                    <InputComponent :lbl="'Contraseña'" v-model="contrasenaInput" :type="'password'"
-                        :name="'contrasena'" :id="'contrasena'" :placeholder="'Ingresa tu contraseña'"
-                        :error="errores.contrasena">
+
+                    <InputComponent :lbl="'Contraseña'" v-model="contrasenaInput" type="password" name="contrasena"
+                        id="contrasena" :placeholder="'Ingresa tu contraseña'" :error="errores.contrasena"
+                        class="login-input">
                         <LockIcon @click="togglePass" class="input-icon input-lock" />
                     </InputComponent>
-                </div>
-            </section>
 
-            <button @click="validacionCampos" class="btn-log">Iniciar sesion</button>
+                    <button @click="validacionCampos" class="login-button">
+                        <span>Iniciar sesión</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
+
 <script setup>
 import InputComponent from '@/components/InputComponent.vue';
 import LockIcon from '@/assets/icons/LockIcon.vue';
@@ -49,7 +54,7 @@ let errores = reactive({
 });
 
 async function validacionCampos() {
-    const btnLog = document.querySelector('.btn-log');
+    const btnLog = document.querySelector('.login-button');
 
     errores.correo = '';
     errores.contrasena = '';
@@ -72,10 +77,10 @@ async function validacionCampos() {
             clearInterval(loaderInterval);
 
             if (response.logIn) {
-                return router.push('/dashboard');
+                return router.push('/panel');
             } else if (!response.success) {
                 btnLog.style.pointerEvents = 'all';
-                btnLog.textContent = "Iniciar sesion";
+                btnLog.textContent = "Iniciar sesión";
 
                 return simpleAlert(
                     'No se pudo completar la solicitud',
@@ -84,7 +89,7 @@ async function validacionCampos() {
             }
         } catch (error) {
             clearInterval(loaderInterval);
-            btnLog.textContent = "Iniciar sesion";
+            btnLog.textContent = "Iniciar sesión";
 
             return simpleAlert(
                 'Error',
@@ -117,96 +122,118 @@ function viewLoader(btnLog) {
 }
 
 </script>
+
 <style scoped>
-.layout {
-    background-color: #e5f6e5;
-    min-height: 100dvh;
+.login-layout {
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--color-background);
+    padding: 2rem;
 }
 
-.container {
-    width: 500px;
-    height: 520px;
-    display: flex;
-    flex-direction: column;
-    background-color: #ffffff;
-    margin: 10px auto;
-    border: none;
-    border-radius: var(--card-radius);
-    box-shadow: var(--card-shadow);
+.login-container {
+    width: 100%;
+    max-width: 400px;
 }
 
-.sect-header {
-    margin: 20px auto;
-    width: 350px;
+.login-card {
+    background-color: var(--color-white);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    padding: 2.5rem 2rem;
+}
+
+.login-header {
     text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-icon-container {
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    margin-bottom: 1.25rem;
 }
 
-.lock-icon {
-    width: 55px;
-    height: 55px;
-    border-radius: 100%;
-    padding: 7px;
-    color: white;
-    background-color: var(--color-main);
+.login-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--color-white);
 }
 
-h2 {
-    font-size: 1.7em;
-    color: #161616;
-
-    span {
-        color: var(--color-main);
-    }
+.login-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
 }
 
-.data-header {
-    color: var(--muted-text);
+.login-title span {
+    color: var(--color-accent);
 }
 
-.sect-content {
-    margin: 30px auto;
-    width: 400px;
-
-    div {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
+.login-subtitle {
+    color: var(--color-text-light);
+    font-size: 0.9375rem;
+    margin: 0;
 }
 
-label {
-    position: relative;
+.login-form {
     display: flex;
     flex-direction: column;
-    color: #161616;
-    font-size: 16px;
+    gap: 1.5rem;
+}
 
-    input {
-        outline: none;
-        margin-top: 3px;
-        padding: 7px 3px 7px 30px;
-        background-color: #fffdfd;
-        border: 1px solid var(--border-color);
-        border-radius: 5px;
-    }
+.login-input {
+    width: 100%;
+}
 
-    .input-lock {
-        cursor: pointer;
-    }
+.login-button {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
 
-    .input-icon {
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        top: 31px;
-        left: 5px;
-        color: var(--muted-text);
-    }
+.login-button:hover {
+    background-color: var(--color-accent-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+.login-button:active {
+    transform: translateY(0);
+}
+
+.input-lock {
+    cursor: pointer;
+}
+
+.input-icon {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 33px;
+    left: 5px;
+    color: var(--muted-text);
 }
 
 .errores {
