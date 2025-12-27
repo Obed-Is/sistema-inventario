@@ -20,4 +20,5 @@ router.post('/login',
     (req, res, next) => tokenMiddleware.userIsLog(req, res, next),
     (req, res, next) => userController.loginUser(req, res, next));
 
+router.post('/logout', (req, res, next) => userController.userSessionLogout(req, res));
 export default router;
