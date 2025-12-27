@@ -40,9 +40,11 @@ import { UserApi } from '@/api/usersApi.js';
 import { reactive, ref } from 'vue';
 import { simpleAlert } from '@/utils/sweetAlert.js';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '@/utils/UserStore';
 
 const userApi = new UserApi();
 const router = useRouter();
+const userStore = useUserStore();
 
 let loaderInterval;
 
@@ -77,6 +79,9 @@ async function validacionCampos() {
             clearInterval(loaderInterval);
 
             if (response.logIn) {
+                console.log(response)
+                //uso de pinia para mandar y guardar los datos
+                userStore.loginStore(response.userData);
                 return router.push('/panel');
             } else if (!response.success) {
                 btnLog.style.pointerEvents = 'all';
@@ -90,6 +95,7 @@ async function validacionCampos() {
         } catch (error) {
             clearInterval(loaderInterval);
             btnLog.textContent = "Iniciar sesión";
+            btnLog.style.pointerEvents = 'all';
 
             return simpleAlert(
                 'Error',
