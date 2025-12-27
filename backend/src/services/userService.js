@@ -9,7 +9,7 @@ const validationUser = new UserValidate();
 export class UserService {
     constructor(db) {
         this.userModel = new UserModel(db);
-        this.tokenService =  new TokenService(db);
+        this.tokenService = new TokenService(db);
     }
 
     async newUser(req) {
@@ -45,7 +45,7 @@ export class UserService {
         }
 
         const { correo, contrasena } = req.body;
-        const [ userData ] = await this.userModel.getUserFromDb(correo);
+        const [userData] = await this.userModel.getUserFromDb(correo);
 
         if (!userData[0]) {
             throw new ValidationError('Credenciales invalidas', 401);
@@ -104,6 +104,18 @@ export class UserService {
         return bcrypt.compare(contrasena, hashContrasena);
     }
 
-
+    async logoutUser(acess_token) {
+        try {
+            if(!acess_token){
+                return null;
+            }
+            const { id } = this.tokenService.getPayloadToken(acess_token);
+            const [result] = await this.userModel.invalidateTokenFromDb(id);
+            return await result.affectedRows;
+        } catch (err) {
+            console.log('Ocurrio un error al invalidar la sesion(logout): ', err)
+            throw new TokenError('Ocurrio un error interno', 500)
+        }
+    }
 }
 

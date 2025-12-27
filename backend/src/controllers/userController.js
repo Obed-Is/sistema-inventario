@@ -54,4 +54,18 @@ export class UserController {
         }
         return res.status(401).json({ logIn: false })
     }
+
+    async userSessionLogout(req, res, next) {
+        try {
+            const acessToken = req.cookies.acess_token;
+            await this.service.logoutUser(acessToken);
+            req.logIn = false;
+
+            return res.clearCookie('refresh_token').clearCookie('acess_token')
+                .status(200).json({ logIn: false, message: 'Sesion cerrada' });
+        } catch (err) {
+            res.clearCookie('refresh_token').clearCookie('acess_token');
+            next(err)
+        }
+    }
 }
