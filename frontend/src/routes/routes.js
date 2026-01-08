@@ -16,13 +16,13 @@ const routes = [
         path: '/panel', component: DashboardLayout,
         meta: { requiresAuth: true },
         children: [
-            { path: '', component: InicioView },
-            { path: 'usuarios', component: UsuariosView },
-            { path: 'productos', component: UsuariosView },
-            { path: 'categorias', component: UsuariosView },
-            { path: 'proveedores', component: UsuariosView },
-            { path: 'movimientos', component: UsuariosView },
-            { path: 'reportes', component: UsuariosView },
+            { path: '', component: InicioView, meta: { roles: ['administrador', 'bodega', 'cajero'] } },
+            { path: 'usuarios', component: UsuariosView, meta: { roles: ['administrador'] } },
+            { path: 'productos', component: UsuariosView, meta: { roles: ['administrador', 'bodega'] } },
+            { path: 'categorias', component: UsuariosView, meta: { roles: ['administrador', 'bodega'] } },
+            { path: 'proveedores', component: UsuariosView, meta: { roles: ['administrador', 'bodega'] } },
+            { path: 'movimientos', component: UsuariosView, meta: { roles: ['administrador', 'cajero'] } },
+            { path: 'reportes', component: UsuariosView, meta: { roles: ['administrador'] } },
         ]
     },
     // { path: '/:pathMatch(.   *)*', redirect: '/login' }, // Captura cualquier ruta no definida
