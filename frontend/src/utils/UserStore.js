@@ -1,5 +1,9 @@
 import { defineStore } from "pinia";
+import { UserApi } from "@/api/usersApi";
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+const userApi = new UserApi();
 //CONFIGURACION DE PINIA PARA EL MANEJO DE LOS DATOS DEL USUARIO
 export const useUserStore = defineStore('user', {
     state: () => ({
@@ -20,7 +24,7 @@ export const useUserStore = defineStore('user', {
             const data = localStorage.getItem('usuarioLog');
             if (!data) {
                 //AQUI SE DEBERIA 1 CERRAR LA SESION O SOLICITAR LOS DATOS NUEVAMENTE AL BACKEND
-                return null
+                return this.logout();
             } else {
                 const { nombre_rol, nombre, correo } = JSON.parse(data);
                 this.usuario = nombre;
@@ -28,9 +32,11 @@ export const useUserStore = defineStore('user', {
                 this.rol = nombre_rol;
             }
         },
-        logout() {
+        async logout() {
             // ESTO SE LLAMARIA SOLO AL CERRAR LA SESION(CREO)
             localStorage.removeItem('usuarioLog');
+            await userApi.logoutUser();
+            return router.push('/login')
         }
     }
 })
