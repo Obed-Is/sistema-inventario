@@ -106,7 +106,7 @@ export class UserService {
 
     async logoutUser(acess_token) {
         try {
-            if(!acess_token){
+            if (!acess_token) {
                 return null;
             }
             const { id } = this.tokenService.getPayloadToken(acess_token);
@@ -115,6 +115,33 @@ export class UserService {
         } catch (err) {
             console.log('Ocurrio un error al invalidar la sesion(logout): ', err)
             throw new TokenError('Ocurrio un error interno', 500)
+        }
+    }
+
+    async getUserService(page) {
+        let limit = 5;
+        let offset;
+
+        if(page == 1 || !page) {
+            offset = 0;
+        }else{
+            offset = limit * (page - 1);
+        }
+
+        try {
+            const [users] = await this.userModel.allUsers(limit, offset);
+            if (typeof users != 'object') throw new NotFoundError("No se pudo obtener los usuarios", 404);
+
+            //se eliminan los datos de contraseña y el id del rol de los datos de usuarios
+            users.forEach(usuario => {
+                delete usuario.contraseña;
+                delete usuario.id_rol;
+            });
+
+            return users;
+        } catch (err) {
+            console.log('Ocurrio un error al llamar la informacion de todos los usuarios: ', err);
+            throw err;
         }
     }
 }

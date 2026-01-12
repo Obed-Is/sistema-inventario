@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 //importacion de archivos
 import routerAth from './routes/auth/routerAuth.js';
+import userRouter from './routes/users.router.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 
 app.use('/user', routerAth);
+app.use('/user', userRouter);
 
 //para q express capture el error debe ir de ultimo
 app.use(errorHandler);

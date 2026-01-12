@@ -39,7 +39,7 @@ export class TokenMiddleware {
                 //caso contrario se genera nuevo token de acceso y se mantiene la sesion
                 console.log('Refresh token valido la sesion se mantendra para: ', payload);
                 const newAcessToken = await this.tokenService.newAcessToken(payload.id, payload.correo, payload.nombre, payload.nombre_rol);
-                
+
                 res.cookie('acess_token', newAcessToken, {
                     httpOnly: true, sameSite: 'Strict'
                 })
@@ -69,5 +69,22 @@ export class TokenMiddleware {
             }
         }
         next();
+    }
+
+
+    async validAcessUser(req, res, next) {
+        try {
+            const payload = this.tokenService.getPayloadToken(req.cookies.acess_token);
+
+            if (!payload) return res.status(403).json({ message: 'Acceso denegado', success: false });
+            if (payload.nombre_rol.toLowerCase() != 'administrador') return res.status(403).json({ message: 'Acceso denegado', success: false });
+
+            const request = await this.tokenService.userValidRol(payload.nombre_rol, payload.correo)
+            if (!request) return res.status(403).json({ message: 'Acceso denegado', success: false });
+
+            next()
+        } catch (err) {
+            return res.status(403).json({ message: 'Acceso denegado', success: false });
+        }
     }
 }

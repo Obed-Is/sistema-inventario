@@ -68,4 +68,14 @@ export class UserController {
             next(err)
         }
     }
+
+    async getAllUsers(req, res, next) {
+        try {
+            const { page } = req.query;
+            const users = await this.service.getUserService(page);
+            res.status(200).json({ success: true, users });
+        } catch (err) {
+            next(err)
+        }
+    }
 }

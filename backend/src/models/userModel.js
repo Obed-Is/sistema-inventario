@@ -84,4 +84,29 @@ export class UserModel {
             throw err;
         }
     }
+
+    async allUsers(limit, offset) {
+        try {
+            return this.db.query(`
+                SELECT u.*, r.nombre_rol FROM usuarios u INNER JOIN roles r on r.id = u.id_rol 
+                WHERE estado != -1 LIMIT ? OFFSET ? `,
+                [limit, offset]
+            );
+        } catch (err) {
+            console.log('Error al llamar todos los usuarios', err);
+            throw err;
+        }
+    }
+
+    async validRol(rol, correo) {
+        try {
+            return this.db.query(
+                `SELECT u.correo FROM usuarios u INNER JOIN roles r on r.id = u.id_rol
+                WHERE r.nombre_rol = ? AND u.correo = ?`,
+                [rol, correo]);
+        } catch (err) {
+            console.log('Error al comprobar si el rol del usuario es valido', err);
+            throw err;
+        }
+    }
 }

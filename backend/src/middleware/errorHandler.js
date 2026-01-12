@@ -1,4 +1,4 @@
-import { DuplicateError, NotFoundError, ValidationError, TokenError } from "../errors/errors.js";
+import { DuplicateError, NotFoundError, ValidationError, TokenError, RolError } from "../errors/errors.js";
 
 export const errorHandler = (err, req, res, next) => {
 
@@ -16,6 +16,10 @@ export const errorHandler = (err, req, res, next) => {
     }
 
     if (err instanceof TokenError) {
+        return res.status(err.status).json({ success: false, message: err.message });
+    }
+
+     if (err instanceof RolError) {
         return res.status(err.status).json({ success: false, message: err.message });
     }
     console.log('Error no capturado: ', err)
