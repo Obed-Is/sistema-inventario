@@ -23,8 +23,8 @@ export class UserController {
 
     async loginUser(req, res, next) {
         try {
-            console.log('La sesion del usuario es valida? ',req.logIn);
-            
+            console.log('La sesion del usuario es valida? ', req.logIn);
+
             if (req.logIn) {
                 return res.status(200).json({ logIn: true, message: 'El usuario ya esta logueado' });
             }
@@ -45,6 +45,27 @@ export class UserController {
                 .json({ logIn: true, userData: userData.userLog })
         } catch (err) {
             next(err);
+        }
+    }
+
+    userSession(req, res, next) {
+        if (req.logIn) {
+            return res.status(200).json({ logIn: true })
+        }
+        return res.status(401).json({ logIn: false })
+    }
+
+    async userSessionLogout(req, res, next) {
+        try {
+            const acessToken = req.cookies.acess_token;
+            await this.service.logoutUser(acessToken);
+            req.logIn = false;
+
+            return res.clearCookie('refresh_token').clearCookie('acess_token')
+                .status(200).json({ logIn: false, message: 'Sesion cerrada' });
+        } catch (err) {
+            res.clearCookie('refresh_token').clearCookie('acess_token');
+            next(err)
         }
     }
 }

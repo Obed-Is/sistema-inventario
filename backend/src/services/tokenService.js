@@ -74,4 +74,8 @@ export class TokenService {
         expired.setMilliseconds(0);
         return expired.toLocaleString('sv-SE');
     }
+
+    getPayloadToken(token){
+        return jwt.decode(token);
+    }
 }

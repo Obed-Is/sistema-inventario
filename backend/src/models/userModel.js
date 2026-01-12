@@ -73,4 +73,15 @@ export class UserModel {
             throw err;
         }
     }
+
+    async invalidateTokenFromDb(id_usuario) {
+        try {
+            return this.db.execute(`UPDATE refresh_token SET expired_at = "2000-12-12 00:00:00" WHERE id_usuario = ?`,
+                [id_usuario]
+            );
+        } catch (err) {
+            console.log('Error al invalidar el token en la base de datos: \n', err);
+            throw err;
+        }
+    }
 }
