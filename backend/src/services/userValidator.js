@@ -66,7 +66,7 @@ export class UserValidate {
         let { nombre, correo, telefono, rol, contrasena, estado } = campos;
 
         nombre = nombre.trim();
-        correo = correo.trim().toLowerCase();
+        correo = correo;
         telefono = telefono.trim();
         rol = rol.trim().toLowerCase();
         estado = parseInt(estado);
