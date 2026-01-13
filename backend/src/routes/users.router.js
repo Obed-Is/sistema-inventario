@@ -13,4 +13,8 @@ userRouter.get('',
     (req, res, next) => tokenMiddleware.validAcessUser(req, res, next),
     (req, res, next) => userController.getAllUsers(req, res, next));
 
+userRouter.put('/:id',
+    (req, res, next) => tokenMiddleware.validAcessUser(req, res, next),
+    (req, res, next) => userController.updateUser(req, res, next));
+
 export default userRouter;

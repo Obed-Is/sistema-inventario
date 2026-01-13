@@ -109,4 +109,30 @@ export class UserModel {
             throw err;
         }
     }
+
+    async updateUserInDb(id, nombre, correo, telefono, rol, estado) {
+        try {
+            return this.db.execute(`UPDATE usuarios SET nombre = ?, correo = ?, telefono = ?, id_rol = ?, estado = ? WHERE id = ?`,
+                [nombre, correo, telefono, rol, estado, id]);
+        } catch (err) {
+            console.log('Error al actualizar el usuario en la base de datos: \n', err);
+            throw err;
+        }
+    }
+
+    async updateContrasenaInDb(id, contrasena) {
+        try {
+            return this.db.execute(`UPDATE usuarios SET contraseña = ? WHERE id = ?`, [contrasena, id]);
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async getUserIdByRol(rol) {
+        try {
+            return this.db.query(`SELECT id FROM roles WHERE nombre_rol = ?`, [rol]);
+        } catch (err) {
+            throw err;
+        }
+    }
 }

@@ -78,4 +78,20 @@ export class UserController {
             next(err)
         }
     }
+
+    async updateUser(req, res, next) {
+        try {
+
+            const { id } = req.params;
+            const userUpdated = await this.service.updateUserService(id, req.body);
+            
+            if (!userUpdated.success) {
+                return res.status(404).json({ success: false, message: userUpdated.message });
+            }
+            res.status(200).json({ success: true, message: userUpdated.message });
+    } catch (err) {
+        console.log('Error recibido en el controlador al actualizar el usuario: ', err)
+        next(err);
+    }
+}
 }

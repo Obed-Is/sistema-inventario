@@ -122,9 +122,9 @@ export class UserService {
         let limit = 5;
         let offset;
 
-        if(page == 1 || !page) {
+        if (page == 1 || !page) {
             offset = 0;
-        }else{
+        } else {
             offset = limit * (page - 1);
         }
 
@@ -141,6 +141,45 @@ export class UserService {
             return users;
         } catch (err) {
             console.log('Ocurrio un error al llamar la informacion de todos los usuarios: ', err);
+            throw err;
+        }
+    }
+
+    async updateUserService(id, campos) {
+        try {
+            const isValid = validationUser.validateUpdateUser(campos);
+            if (!isValid.valid) {
+                return { success: false, message: isValid.message };
+            }
+
+            const { nombre, correo, telefono, rol, contrasena, estado } = campos;
+
+            if (contrasena && contrasena.trim()) {
+                const hashContrasena = await this.hashedPassword(contrasena);
+
+                const [updateContrasena] = await this.userModel.updateContrasenaInDb(id, hashContrasena);
+
+                if (!updateContrasena.affectedRows) {
+                    throw new NotFoundError('No se pudo actualizar la contraseña', 404);
+                }
+            }
+
+            const [getIdRol] = await this.userModel.getIdByRol(rol);
+            if (!getIdRol[0]) {
+                throw new NotFoundError('No se encontro el rol', 404);
+            }
+
+            const [userUpdated] = await this.userModel.updateUserInDb(id, nombre, correo, telefono, getIdRol[0].id, estado);
+            console.log('Usuario actualizado: ', userUpdated.affectedRows)
+            if (!userUpdated.affectedRows) {
+                throw new NotFoundError('No se pudo actualizar el usuario', 404);
+            }
+
+            return { success: true, message: 'Usuario actualizado' };
+        } catch (err) {
+            if(err.message.split(' ')[0].toLowerCase() === 'duplicate' ){
+                throw new DuplicateError('Usuario duplicado', 409)
+            }
             throw err;
         }
     }
