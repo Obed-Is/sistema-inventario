@@ -66,7 +66,7 @@ export class UserApi {
                 },
                 method: 'POST',
                 credentials: "include",
-                body : JSON.stringify(data)
+                body: JSON.stringify(data)
             });
 
             return await response.json();
@@ -76,7 +76,7 @@ export class UserApi {
         }
     }
 
-    async getUsersApi(page){
+    async getUsersApi(page) {
         try {
             const response = await fetch(`/api/user?page=${page}`, {
                 headers: {
@@ -87,20 +87,48 @@ export class UserApi {
             });
 
             const data = await response.json();
-            
+
             // Si la respuesta es 403 o contiene mensaje de acceso denegado, lanzar error
             if (response.status === 403 || (data && (data.message === 'Acceso denegado' || data.message?.toLowerCase().includes('acceso denegado')))) {
-                return { 
-                    success: false, 
+                return {
+                    success: false,
                     message: 'Acceso denegado',
-                    accessDenied: true 
+                    accessDenied: true
                 };
             }
-            
+
             return data;
         } catch (error) {
             console.log(error)
             return { success: false, error: error.message };
+        }
+    }
+
+    async updateUserApi(id, user) {
+        try {
+            const response = await fetch(`/api/user/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                method: 'PUT',
+                credentials: "include",
+                body: JSON.stringify(user)
+            });
+
+            const data = await response.json();
+
+            if (response.status === 403 || (data && (data.message === 'Acceso denegado' || data.message?.toLowerCase().includes('acceso denegado')))) {
+                return {
+                    success: false,
+                    message: 'Acceso denegado',
+                    accessDenied: true
+                };
+            }
+
+            return data;
+        } catch (error) {
+            console.log(error)
+            return { success: false };
         }
     }
 }

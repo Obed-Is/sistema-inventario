@@ -151,7 +151,7 @@ const formData = ref({
     email: '',
     telefono: '',
     rol: '',
-    estado: 'activo',
+    estado: '',
     password: '',
     passwordConfirm: ''
 });

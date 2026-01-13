@@ -89,18 +89,17 @@
                 Página {{ currentPage }} - Mostrando {{ users.length }} usuario{{ users.length !== 1 ? 's' : '' }}
             </div>
             <div class="pagination-controls">
-                <button class="btn-pagination" @click="changePage(currentPage - 1)" :disabled="currentPage === 1 || loading">
+                <button class="btn-pagination" @click="changePage(currentPage - 1)"
+                    :disabled="currentPage === 1 || loading">
                     <ChevronLeftIcon style="width: 16px; height: 16px;" />
                     Anterior
                 </button>
                 <div class="page-numbers">
-                    <button
-                        :class="['page-number', { active: true }]">
+                    <button :class="['page-number', { active: true }]">
                         {{ currentPage }}
                     </button>
                 </div>
-                <button class="btn-pagination" @click="changePage(currentPage + 1)"
-                    :disabled="!hasMoreData || loading">
+                <button class="btn-pagination" @click="changePage(currentPage + 1)" :disabled="!hasMoreData || loading">
                     Siguiente
                     <ChevronRightIcon style="width: 16px; height: 16px;" />
                 </button>
@@ -189,25 +188,37 @@ const handleSubmit = async (formData) => {
                 await simpleAlert('Éxito', 'Usuario creado correctamente', 'success');
                 await loadUsers(currentPage.value);
             } else {
-                if (request.message && request.message.toLowerCase().includes('duplicado')){
+                if (request.message && request.message.toLowerCase().includes('duplicado')) {
                     simpleAlert('Algo salio mal', 'El correo electronico o telefono del usuario ya estan registrados, ingrese uno diferente', 'error');
-                }else{
+                } else {
                     simpleAlert('Algo salio mal', request.message || 'Error al crear usuario', 'error');
                 }
             }
         } else {
-            // Por ahora solo actualizamos localmente hasta que exista el endpoint de actualización
-            const index = users.value.findIndex(u => u.id === formData.id);
-            if (index !== -1) {
-                users.value[index] = {
-                    ...users.value[index],
-                    nombre: formData.nombre,
-                    correo: formData.email,
-                    telefono: formData.telefono,
-                    rol: formData.rol.charAt(0).toUpperCase() + formData.rol.slice(1),
-                    estado: formData.estado
-                };
-                await simpleAlert('Éxito', 'Usuario actualizado correctamente', 'success');
+            const userUpdate = {
+                nombre: formData.nombre,
+                contrasena: formData.password,
+                correo: formData.email,
+                telefono: formData.telefono,
+                rol: formData.rol.charAt(0).toUpperCase() + formData.rol.slice(1),
+                estado: (formData.estado === 'activo') ? 1 : 0
+            };
+            const response = await userApi.updateUserApi(formData.id, userUpdate);
+
+            if (response && response.accessDenied) {
+                await simpleAlert('Acceso Denegado', 'No tienes permisos para acceder a esta sección', 'warning');
+                router.push('/panel');
+                return;
+            }
+
+            if (response.success) {
+                simpleAlert('Éxito', 'Usuario actualizado correctamente', 'success').then(() => router.go(0))
+            } else {
+                if (response.message.toLowerCase() == 'usuario duplicado') {
+                    simpleAlert('Algo salio mal', 'El correo electronico o telefono del usuario ya estan registrados, ingrese uno diferente', 'error');
+                }else{
+                    simpleAlert('Error', 'Ocurrio un problema al actualizar, vuelve a intentarlo de nuevo', 'error');
+                }
             }
         }
         closeModal();
@@ -258,14 +269,14 @@ const loadUsers = async (page = 1) => {
     loading.value = true;
     try {
         const response = await userApi.getUsersApi(page);
-        
+
         // Si hay acceso denegado, redirigir al panel principal
         if (response && response.accessDenied) {
             await simpleAlert('Acceso Denegado', 'No tienes permisos para acceder a esta sección', 'warning');
             router.push('/panel');
             return;
         }
-        
+
         if (response && response.users) {
             users.value = response.users;
             hasMoreData.value = response.users.length >= 5;
