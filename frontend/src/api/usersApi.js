@@ -75,4 +75,32 @@ export class UserApi {
             return false;
         }
     }
+
+    async getUsersApi(page){
+        try {
+            const response = await fetch(`/api/user?page=${page}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                method: 'GET',
+                credentials: "include",
+            });
+
+            const data = await response.json();
+            
+            // Si la respuesta es 403 o contiene mensaje de acceso denegado, lanzar error
+            if (response.status === 403 || (data && (data.message === 'Acceso denegado' || data.message?.toLowerCase().includes('acceso denegado')))) {
+                return { 
+                    success: false, 
+                    message: 'Acceso denegado',
+                    accessDenied: true 
+                };
+            }
+            
+            return data;
+        } catch (error) {
+            console.log(error)
+            return { success: false, error: error.message };
+        }
+    }
 }
