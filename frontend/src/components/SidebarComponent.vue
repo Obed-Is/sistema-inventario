@@ -13,37 +13,37 @@
                     </ButtonSidebarComponent>
                 </RouterLink>
 
-                <RouterLink to="/panel/usuarios" active-class="activo">
+                <RouterLink v-if="userStore.rol.toLowerCase() === 'administrador'" to="/panel/usuarios" active-class="activo">
                     <ButtonSidebarComponent titulo="Usuarios">
                         <UsersIcon class="icon" />
                     </ButtonSidebarComponent>
                 </RouterLink>
 
-                <RouterLink to="/panel/productos" active-class="activo">
+                <RouterLink v-if="userStore.rol.toLowerCase() === 'administrador' || userStore.rol.toLowerCase() === 'bodega'" to="/panel/productos" active-class="activo">
                     <ButtonSidebarComponent titulo="Productos">
                         <ProductIcon class="icon" />
                     </ButtonSidebarComponent>
                 </RouterLink>
 
-                <RouterLink to="/panel/categorias" active-class="activo">
+                <RouterLink v-if="userStore.rol.toLowerCase() === 'administrador' || userStore.rol.toLowerCase() === 'bodega'" to="/panel/categorias" active-class="activo">
                     <ButtonSidebarComponent titulo="Categorias">
                         <CategoryIcon class="icon" />
                     </ButtonSidebarComponent>
                 </RouterLink>
 
-                <RouterLink to="/panel/proveedores" active-class="activo">
+                <RouterLink v-if="userStore.rol.toLowerCase() === 'administrador' || userStore.rol.toLowerCase() === 'bodega'" to="/panel/proveedores" active-class="activo">
                     <ButtonSidebarComponent titulo="Proveedores">
                         <ProveedorIcon class="icon" />
                     </ButtonSidebarComponent>
                 </RouterLink>
 
-                <RouterLink to="/panel/movimientos" active-class="activo">
+                <RouterLink v-if="userStore.rol.toLowerCase() === 'administrador' || userStore.rol.toLowerCase() === 'cajero'"  to="/panel/movimientos" active-class="activo">
                     <ButtonSidebarComponent titulo="Movimientos">
                         <MovIcon class="icon" />
                     </ButtonSidebarComponent>
                 </RouterLink>
 
-                <RouterLink to="/panel/reportes" active-class="activo">
+                <RouterLink v-if="userStore.rol.toLowerCase() === 'administrador'"  to="/panel/reportes" active-class="activo">
                     <ButtonSidebarComponent titulo="Reportes">
                         <ReportIcon class="icon" />
                     </ButtonSidebarComponent>
@@ -59,7 +59,7 @@
                     <span class="user-role">{{ userStore.rol }}</span>
                 </div>
             </div>
-            <button class="logout-button">
+            <button class="logout-button" @click="logout">
                 <span>Cerrar sesion</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -80,22 +80,41 @@ import ButtonSidebarComponent from '@/components/ButtonSidebarComponent.vue';
 import ProveedorIcon from '@/assets/icons/ProveedorIcon.vue';
 import MovIcon from '@/assets/icons/MovIcon.vue';
 import ReportIcon from '@/assets/icons/ReportIcon.vue';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import { useUserStore } from '@/utils/UserStore';
+import { UserApi } from '@/api/usersApi';
+import { questionAlert, simpleAlert } from '@/utils/sweetAlert';
 
 const userStore = useUserStore();
+const router = useRouter();
+const userApi = new UserApi();
+
+const logout = () => {
+    questionAlert('Cerrar sesion', '¿Estas seguro de que deseas cerrar la sesion?', 'question')
+        .then(async (result) => {
+            if (!result.isConfirmed) return;
+            const response = await userApi.logoutUser();
+
+            if (response) {
+                return router.push('/login');
+            }
+            return simpleAlert('Informacion', 'Parece que ocurrio un error al intentar cerrar la sesion, intenta de nuevo', 'warning')
+        })
+        .catch(() => simpleAlert('Informacion', 'Parece que ocurrio un error al intentar cerrar la sesion, intenta de nuevo', 'warning'))
+}
 </script>
 
 <style scoped>
 .sidebar {
     width: 100%;
-    height: 100dvh;
+    height: 100vh;
     padding: 24px 16px;
     background-color: var(--color-white);
     box-shadow: var(--shadow);
     display: flex;
     flex-direction: column;
     font-family: var(--font-sans);
+    overflow-y: auto;
 }
 
 .sidebar-content {
