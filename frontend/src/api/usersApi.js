@@ -131,4 +131,31 @@ export class UserApi {
             return { success: false };
         }
     }
+
+    async deleteUserApi(id) {
+        try {
+            const response = await fetch(`/api/user/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                method: 'DELETE',
+                credentials: "include",
+            });
+
+            const data = await response.json();
+
+            if (response.status === 403 || (data && (data.message === 'Acceso denegado' || data.message?.toLowerCase().includes('acceso denegado')))) {
+                return {
+                    success: false,
+                    message: 'Acceso denegado',
+                    accessDenied: true
+                };
+            }
+
+            return data;
+        } catch (error) {
+            console.log(error)
+            return { success: false };
+        }
+    }
 }

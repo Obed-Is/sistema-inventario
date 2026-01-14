@@ -38,3 +38,11 @@ export class RolError extends Error{
         this.stack = false
     }
 }
+
+export class DeleteError extends Error{
+    constructor(message, status){
+        super(message),
+        this.status = status,
+        this.stack = false
+    }
+}

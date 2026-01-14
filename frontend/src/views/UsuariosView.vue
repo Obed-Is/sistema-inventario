@@ -11,7 +11,7 @@
             </button>
         </div>
 
-        <div class="filters-section">
+        <!-- <div class="filters-section">
             <div class="search-box">
                 <SearchIcon class="search-icon" style="width: 18px; height: 18px;" />
                 <input type="text" v-model="searchQuery" placeholder="Buscar por nombre o email..." class="search-input"
@@ -30,7 +30,7 @@
                     <option value="inactivo">Inactivo</option>
                 </select>
             </div>
-        </div>
+        </div> -->
 
         <div class="table-container">
             <table class="users-table">
@@ -216,7 +216,7 @@ const handleSubmit = async (formData) => {
             } else {
                 if (response.message.toLowerCase() == 'usuario duplicado') {
                     simpleAlert('Algo salio mal', 'El correo electronico o telefono del usuario ya estan registrados, ingrese uno diferente', 'error');
-                }else{
+                } else {
                     simpleAlert('Error', 'Ocurrio un problema al actualizar, vuelve a intentarlo de nuevo', 'error');
                 }
             }
@@ -233,19 +233,20 @@ const confirmDelete = async (user) => {
         `¿Estás seguro de que deseas eliminar a ${user.nombre}? Esta accion no se puede deshacer.`,
         'warning'
     );
-
+    console.log(user)
     if (result.isConfirmed) {
-        // Por ahora solo eliminamos localmente hasta que exista el endpoint de eliminación
-        const index = users.value.findIndex(u => u.id === user.id);
-        if (index !== -1) {
-            users.value.splice(index, 1);
-            await simpleAlert('Éxito', 'Usuario eliminado correctamente', 'success');
-            if (users.value.length === 0 && currentPage.value > 1) {
-                currentPage.value--;
-                await loadUsers(currentPage.value);
-            } else if (users.value.length === 0 && currentPage.value === 1) {
-                await loadUsers(1);
-            }
+        const request = await userApi.deleteUserApi(user.id);
+
+        if (request && request.accessDenied) {
+            await simpleAlert('Acceso Denegado', 'No tienes permisos para hacer esta accion', 'warning');
+            router.push('/panel');
+            return;
+        }
+
+        if (request.success) {
+            simpleAlert('Éxito', 'El usuario fue eliminado correctamente', 'success').then(() => router.go(0))
+        } else {
+            simpleAlert('Error', 'Ocurrio un problema al intentar eliminar el usuario, vuelve a intentarlo de nuevo', 'error');
         }
     }
 };
@@ -470,10 +471,9 @@ onMounted(async () => {
 }
 
 .name-cell {
-    display: flex;
-    align-items: center;
-    gap: 12px;
     max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .name-cell span {
@@ -531,11 +531,6 @@ onMounted(async () => {
     width: 120px;
 }
 
-.actions-cell {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-}
 
 .btn-action {
     width: 36px;

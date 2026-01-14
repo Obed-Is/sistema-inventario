@@ -19,9 +19,14 @@ export const errorHandler = (err, req, res, next) => {
         return res.status(err.status).json({ success: false, message: err.message });
     }
 
-     if (err instanceof RolError) {
+    if (err instanceof RolError) {
         return res.status(err.status).json({ success: false, message: err.message });
     }
+
+    if (err instanceof DeleteError) {
+        return res.status(err.status).json({ success: false, message: err.message });
+    }
+    
     console.log('Error no capturado: ', err)
     return res.status(500).json({ success: false, message: 'Error interno' });
 }

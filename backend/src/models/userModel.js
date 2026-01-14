@@ -37,7 +37,7 @@ export class UserModel {
 
     async userDuplicate(correo, telefono) {
         try {
-            return this.db.query('SELECT id FROM usuarios WHERE correo = ? OR telefono = ?', [correo, telefono]);
+            return this.db.query('SELECT id FROM usuarios WHERE estado != -1 AND correo = ? OR telefono = ? ', [correo, telefono]);
         } catch (err) {
             console.log('Error al buscar un usuario duplicado en la base de datos: \n', err);
             throw err;
@@ -131,6 +131,14 @@ export class UserModel {
     async getUserIdByRol(rol) {
         try {
             return this.db.query(`SELECT id FROM roles WHERE nombre_rol = ?`, [rol]);
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async deleteUserInDb(id) {
+        try {
+            return this.db.execute(`UPDATE usuarios SET estado = -1 WHERE id = ?`, [id]);
         } catch (err) {
             throw err;
         }

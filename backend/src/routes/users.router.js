@@ -17,4 +17,8 @@ userRouter.put('/:id',
     (req, res, next) => tokenMiddleware.validAcessUser(req, res, next),
     (req, res, next) => userController.updateUser(req, res, next));
 
+userRouter.delete('/:id',
+    (req, res, next) => tokenMiddleware.validAcessUser(req, res, next),
+    (req, res, next) => userController.deleteUser(req, res, next));
+
 export default userRouter;
