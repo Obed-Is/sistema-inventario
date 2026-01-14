@@ -1,8 +1,6 @@
 import { defineStore } from "pinia";
 import { UserApi } from "@/api/usersApi";
-import { useRouter } from 'vue-router';
 
-const router = useRouter();
 const userApi = new UserApi();
 //CONFIGURACION DE PINIA PARA EL MANEJO DE LOS DATOS DEL USUARIO
 export const useUserStore = defineStore('user', {
@@ -36,7 +34,6 @@ export const useUserStore = defineStore('user', {
             // ESTO SE LLAMARIA SOLO AL CERRAR LA SESION(CREO)
             localStorage.removeItem('usuarioLog');
             await userApi.logoutUser();
-            return router.push('/login')
         }
     }
 })
