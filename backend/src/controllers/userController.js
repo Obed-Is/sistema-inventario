@@ -68,4 +68,44 @@ export class UserController {
             next(err)
         }
     }
+
+    async getAllUsers(req, res, next) {
+        try {
+            const { page } = req.query;
+            const users = await this.service.getUserService(page);
+            res.status(200).json({ success: true, users });
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    async updateUser(req, res, next) {
+        try {
+
+            const { id } = req.params;
+            const userUpdated = await this.service.updateUserService(id, req.body);
+
+            if (!userUpdated.success) {
+                return res.status(404).json({ success: false, message: userUpdated.message });
+            }
+            res.status(200).json({ success: true, message: userUpdated.message });
+        } catch (err) {
+            console.log('Error recibido en el controlador al actualizar el usuario: ', err)
+            next(err);
+        }
+    }
+
+    async deleteUser(req, res, next) {
+        try {
+            const { id } = req.params;
+            const userDelete = await this.service.deleteUserService(id);
+
+            if (!userDelete.success) {
+                return res.status(404).json({ success: false, message: userDelete.message });
+            }
+            res.status(200).json({ success: true, message: userDelete.message });
+        } catch (err) {
+            next(err)
+        }
+    }
 }

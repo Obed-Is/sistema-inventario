@@ -11,7 +11,7 @@
             </button>
         </div>
 
-        <div class="filters-section">
+        <!-- <div class="filters-section">
             <div class="search-box">
                 <SearchIcon class="search-icon" style="width: 18px; height: 18px;" />
                 <input type="text" v-model="searchQuery" placeholder="Buscar por nombre o email..." class="search-input"
@@ -30,19 +30,19 @@
                     <option value="inactivo">Inactivo</option>
                 </select>
             </div>
-        </div>
+        </div> -->
 
         <div class="table-container">
             <table class="users-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Nombre Completo</th>
                         <th>Email</th>
                         <th>Teléfono</th>
                         <th>Rol</th>
                         <th>Estado</th>
-                        <th>Fecha Creacion</th>
+                        <th>Fecha Creación</th>
+                        <th>Última Actualización</th>
                         <th class="actions-column">Acciones</th>
                     </tr>
                 </thead>
@@ -53,24 +53,24 @@
                         </td>
                     </tr>
                     <tr v-for="user in paginatedUsers" :key="user.id" class="table-row">
-                        <td>{{ user.id }}</td>
                         <td class="name-cell">
                             <span>{{ user.nombre }}</span>
                         </td>
-                        <td>{{ user.email }}</td>
+                        <td>{{ user.correo }}</td>
                         <td>{{ user.telefono || 'N/A' }}</td>
                         <td>
-                            <span :class="['role-badge', `role-${user.rol.toLowerCase()}`]">
-                                {{ user.rol }}
+                            <span :class="['role-badge', `role-${(user.nombre_rol || '').toLowerCase()}`]">
+                                {{ user.nombre_rol || 'N/A' }}
                             </span>
                         </td>
                         <td>
                             <span
-                                :class="['status-badge', user.estado === 'activo' ? 'status-active' : 'status-inactive']">
-                                {{ user.estado === 'activo' ? 'Activo' : 'Inactivo' }}
+                                :class="['status-badge', (user.estado === 1 || user.estado === '1') ? 'status-active' : 'status-inactive']">
+                                {{ (user.estado === 1 || user.estado === '1') ? 'Activo' : 'Inactivo' }}
                             </span>
                         </td>
-                        <td>{{ formatDate(user.fechaCreacion) }}</td>
+                        <td>{{ formatDate(user.create_at) }}</td>
+                        <td>{{ formatDate(user.update_at) }}</td>
                         <td class="actions-cell">
                             <button class="btn-action btn-edit" @click="openModal('edit', user)" title="Editar">
                                 <EditIcon style="width: 16px; height: 16px;" />
@@ -84,23 +84,22 @@
             </table>
         </div>
 
-        <div class="pagination-container" v-if="totalPages > 1">
+        <div class="pagination-container">
             <div class="pagination-info">
-                Mostrando {{ startIndex + 1 }} - {{ endIndex }} de {{ filteredUsers.length }} usuarios
+                Página {{ currentPage }} - Mostrando {{ users.length }} usuario{{ users.length !== 1 ? 's' : '' }}
             </div>
             <div class="pagination-controls">
-                <button class="btn-pagination" @click="changePage(currentPage - 1)" :disabled="currentPage === 1">
+                <button class="btn-pagination" @click="changePage(currentPage - 1)"
+                    :disabled="currentPage === 1 || loading">
                     <ChevronLeftIcon style="width: 16px; height: 16px;" />
                     Anterior
                 </button>
                 <div class="page-numbers">
-                    <button v-for="page in visiblePages" :key="page"
-                        :class="['page-number', { active: page === currentPage }]" @click="changePage(page)">
-                        {{ page }}
+                    <button :class="['page-number', { active: true }]">
+                        {{ currentPage }}
                     </button>
                 </div>
-                <button class="btn-pagination" @click="changePage(currentPage + 1)"
-                    :disabled="currentPage === totalPages">
+                <button class="btn-pagination" @click="changePage(currentPage + 1)" :disabled="!hasMoreData || loading">
                     Siguiente
                     <ChevronRightIcon style="width: 16px; height: 16px;" />
                 </button>
@@ -114,6 +113,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { questionAlert, simpleAlert } from '@/utils/sweetAlert';
 import PlusIcon from '@/assets/icons/PlusIcon.vue';
 import SearchIcon from '@/assets/icons/SearchIcon.vue';
@@ -124,10 +124,9 @@ import ChevronRightIcon from '@/assets/icons/ChevronRightIcon.vue';
 import UsuarioModal from '@/components/UsuarioModal.vue';
 import { UserApi } from '@/api/usersApi';
 
-const demoUsers = ref([]);
 
 const userApi = new UserApi();
-const users = ref([...demoUsers.value]);
+const router = useRouter();
 const searchQuery = ref('');
 const filterRole = ref('');
 const filterStatus = ref('');
@@ -135,82 +134,29 @@ const showModal = ref(false);
 const modalMode = ref('create');
 const selectedUser = ref(null);
 const currentPage = ref(1);
-const itemsPerPage = 10;
+const users = ref([]);
+const hasMoreData = ref(true);
+const loading = ref(false);
 
-const filteredUsers = computed(() => {
-    let result = [...users.value];
-
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase();
-        result = result.filter(user =>
-            user.nombre.toLowerCase().includes(query) ||
-            user.email.toLowerCase().includes(query)
-        );
-    }
-
-    if (filterRole.value) {
-        result = result.filter(user =>
-            user.rol.toLowerCase() === filterRole.value.toLowerCase()
-        );
-    }
-
-    if (filterStatus.value) {
-        result = result.filter(user =>
-            user.estado === filterStatus.value
-        );
-    }
-
-    return result;
-});
-
-const totalPages = computed(() => Math.ceil(filteredUsers.value.length / itemsPerPage));
-const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage);
-const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage, filteredUsers.value.length));
 const paginatedUsers = computed(() => {
-    return filteredUsers.value.slice(startIndex.value, endIndex.value);
-});
-
-const visiblePages = computed(() => {
-    const pages = [];
-    const total = totalPages.value;
-    const current = currentPage.value;
-
-    if (total <= 7) {
-        for (let i = 1; i <= total; i++) {
-            pages.push(i);
-        }
-    } else {
-        if (current <= 3) {
-            for (let i = 1; i <= 5; i++) pages.push(i);
-            pages.push('...');
-            pages.push(total);
-        } else if (current >= total - 2) {
-            pages.push(1);
-            pages.push('...');
-            for (let i = total - 4; i <= total; i++) pages.push(i);
-        } else {
-            pages.push(1);
-            pages.push('...');
-            for (let i = current - 1; i <= current + 1; i++) pages.push(i);
-            pages.push('...');
-            pages.push(total);
-        }
-    }
-
-    return pages;
+    return users.value;
 });
 
 const handleSearch = () => {
     currentPage.value = 1;
+    loadUsers(1);
 };
 
 const applyFilters = () => {
     currentPage.value = 1;
+    loadUsers(1);
 };
 
-const changePage = (page) => {
-    if (page >= 1 && page <= totalPages.value && page !== '...') {
+const changePage = async (page) => {
+    if (page >= 1 && page !== '...' && !loading.value) {
+        if (page === currentPage.value) return;
         currentPage.value = page;
+        await loadUsers(page);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 };
@@ -239,26 +185,40 @@ const handleSubmit = async (formData) => {
 
             const request = await userApi.createUserApi(newUser);
             if (request.success) {
-                simpleAlert('Éxito', 'Usuario creado correctamente', 'success');
+                await simpleAlert('Éxito', 'Usuario creado correctamente', 'success');
+                await loadUsers(currentPage.value);
             } else {
-                if (request.message.toLowerCase() == 'usuario duplicado'){
+                if (request.message && request.message.toLowerCase().includes('duplicado')) {
                     simpleAlert('Algo salio mal', 'El correo electronico o telefono del usuario ya estan registrados, ingrese uno diferente', 'error');
-                }else{
-                    simpleAlert('Algo salio mal', request.message, 'error');
+                } else {
+                    simpleAlert('Algo salio mal', request.message || 'Error al crear usuario', 'error');
                 }
             }
         } else {
-            const index = users.value.findIndex(u => u.id === formData.id);
-            if (index !== -1) {
-                users.value[index] = {
-                    ...users.value[index],
-                    nombre: formData.nombre,
-                    email: formData.email,
-                    telefono: formData.telefono,
-                    rol: formData.rol.charAt(0).toUpperCase() + formData.rol.slice(1),
-                    estado: formData.estado
-                };
-                await simpleAlert('Éxito', 'Usuario actualizado correctamente', 'success');
+            const userUpdate = {
+                nombre: formData.nombre,
+                contrasena: formData.password,
+                correo: formData.email,
+                telefono: formData.telefono,
+                rol: formData.rol.charAt(0).toUpperCase() + formData.rol.slice(1),
+                estado: (formData.estado === 'activo') ? 1 : 0
+            };
+            const response = await userApi.updateUserApi(formData.id, userUpdate);
+
+            if (response && response.accessDenied) {
+                await simpleAlert('Acceso Denegado', 'No tienes permisos para acceder a esta sección', 'warning');
+                router.push('/panel');
+                return;
+            }
+
+            if (response.success) {
+                simpleAlert('Éxito', 'Usuario actualizado correctamente', 'success').then(() => router.go(0))
+            } else {
+                if (response.message.toLowerCase() == 'usuario duplicado') {
+                    simpleAlert('Algo salio mal', 'El correo electronico o telefono del usuario ya estan registrados, ingrese uno diferente', 'error');
+                } else {
+                    simpleAlert('Error', 'Ocurrio un problema al actualizar, vuelve a intentarlo de nuevo', 'error');
+                }
             }
         }
         closeModal();
@@ -273,30 +233,72 @@ const confirmDelete = async (user) => {
         `¿Estás seguro de que deseas eliminar a ${user.nombre}? Esta accion no se puede deshacer.`,
         'warning'
     );
-
+    console.log(user)
     if (result.isConfirmed) {
-        const index = users.value.findIndex(u => u.id === user.id);
-        if (index !== -1) {
-            users.value.splice(index, 1);
-            await simpleAlert('Éxito', 'Usuario eliminado correctamente', 'success');
-            if (paginatedUsers.value.length === 0 && currentPage.value > 1) {
-                currentPage.value--;
-            }
+        const request = await userApi.deleteUserApi(user.id);
+
+        if (request && request.accessDenied) {
+            await simpleAlert('Acceso Denegado', 'No tienes permisos para hacer esta accion', 'warning');
+            router.push('/panel');
+            return;
+        }
+
+        if (request.success) {
+            simpleAlert('Éxito', 'El usuario fue eliminado correctamente', 'success').then(() => router.go(0))
+        } else {
+            simpleAlert('Error', 'Ocurrio un problema al intentar eliminar el usuario, vuelve a intentarlo de nuevo', 'error');
         }
     }
 };
 
 const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-    });
+    if (!dateString) return 'N/A';
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'N/A';
+        return date.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    } catch (error) {
+        return 'N/A';
+    }
 };
 
-onMounted(() => {
-    // Inicializacion si es necesaria
+const loadUsers = async (page = 1) => {
+    loading.value = true;
+    try {
+        const response = await userApi.getUsersApi(page);
+
+        // Si hay acceso denegado, redirigir al panel principal
+        if (response && response.accessDenied) {
+            await simpleAlert('Acceso Denegado', 'No tienes permisos para acceder a esta sección', 'warning');
+            router.push('/panel');
+            return;
+        }
+
+        if (response && response.users) {
+            users.value = response.users;
+            hasMoreData.value = response.users.length >= 5;
+        } else if (response && Array.isArray(response)) {
+            users.value = response;
+            hasMoreData.value = response.length >= 5;
+        } else {
+            users.value = [];
+            hasMoreData.value = false;
+        }
+    } catch (error) {
+        console.error('Error al cargar usuarios:', error);
+        users.value = [];
+        hasMoreData.value = false;
+    } finally {
+        loading.value = false;
+    }
+};
+
+onMounted(async () => {
+    await loadUsers(1);
 });
 </script>
 
@@ -469,9 +471,16 @@ onMounted(() => {
 }
 
 .name-cell {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.name-cell span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
 }
 
 .role-badge {
@@ -522,11 +531,6 @@ onMounted(() => {
     width: 120px;
 }
 
-.actions-cell {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-}
 
 .btn-action {
     width: 36px;

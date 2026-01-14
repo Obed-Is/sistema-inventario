@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { UserModel } from '../models/userModel.js';
-import { TokenError } from '../errors/errors.js';
+import { TokenError, RolError } from '../errors/errors.js';
 
 export class TokenService {
     constructor(db) {
@@ -75,7 +75,19 @@ export class TokenService {
         return expired.toLocaleString('sv-SE');
     }
 
-    getPayloadToken(token){
+    getPayloadToken(token) {
         return jwt.decode(token);
+    }
+
+    async userValidRol(rol, correo) {
+        try {
+            const [request] = await this.userModel.validRol(rol, correo);
+
+            if(!request[0]) return false;
+            
+            return (request[0].correo === correo) ? true : false;
+        } catch (error) {
+            throw new TokenError('Acceso denegado', 403);
+        }
     }
 }

@@ -59,4 +59,45 @@ export class UserValidate {
 
         return { valid: true };
     }
+
+    validateUpdateUser(campos) {
+        if (!campos) return { valid: false, message: "Datos no enviados" };
+
+        let { nombre, correo, telefono, rol, contrasena, estado } = campos;
+
+        nombre = nombre.trim();
+        correo = correo;
+        telefono = telefono.trim();
+        rol = rol.trim().toLowerCase();
+        estado = parseInt(estado);
+        
+        if(contrasena) {
+            contrasena = contrasena.trim();
+            if (!this.regexPassword.test(contrasena))
+                return { valid: false, message: "La contraseña debe tener minimo 6 caracteres" };
+        }
+
+        if (!nombre || !correo || !telefono || !rol) {
+            return { valid: false, message: "Todos los campos son obligatorios" };
+        }
+
+        if (nombre.length < 4)
+            return { valid: false, message: "El nombre debe tener al menos 4 caracteres" };
+
+        if (!this.regexEmail.test(correo))
+            return { valid: false, message: "Correo invalido" };
+
+        if (!this.regexTelefono.test(telefono))
+            return { valid: false, message: "Telefono invalido" };
+
+        const rolesValidos = ["administrador", "bodega", "cajero"];
+
+        if (!rolesValidos.includes(rol))
+            return { valid: false, message: "Rol no permitido" };
+
+        if (estado !== 1 && estado !== 0 && estado !== -1)
+            return { valid: false, message: "Estado no permitido" };
+
+        return { valid: true };
+    }
 }

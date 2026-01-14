@@ -53,7 +53,7 @@
                         <label>Contraseña *</label>
                         <div class="password-input-wrapper">
                             <input :type="showPassword ? 'text' : 'password'" v-model="formData.password"
-                                :required="mode === 'create'" placeholder="Mínimo 6 caracteres" class="form-input"
+                                required placeholder="Mínimo 6 caracteres" class="form-input"
                                 autocomplete="on" />
                             <button type="button" class="password-toggle" @click="showPassword = !showPassword">
                                 <EyeIcon v-if="!showPassword" style="width: 18px; height: 18px;" />
@@ -66,7 +66,36 @@
                         <label>Confirmar Contraseña *</label>
                         <div class="password-input-wrapper">
                             <input :type="showPasswordConfirm ? 'text' : 'password'" v-model="formData.passwordConfirm"
-                                :required="mode === 'create'" placeholder="Confirme la contraseña" autocomplete="on"
+                                required placeholder="Confirme la contraseña" autocomplete="on"
+                                class="form-input" />
+                            <button type="button" class="password-toggle"
+                                @click="showPasswordConfirm = !showPasswordConfirm">
+                                <EyeIcon v-if="!showPasswordConfirm" style="width: 18px; height: 18px;" />
+                                <EyeOffIcon v-else style="width: 18px; height: 18px;" />
+                            </button>
+                        </div>
+                        <span v-if="errors.passwordConfirm" class="error-message">{{ errors.passwordConfirm }}</span>
+                    </div>
+                </div>
+                <div class="form-row" v-if="mode === 'edit'">
+                    <div class="form-group">
+                        <label>Nueva Contraseña</label>
+                        <div class="password-input-wrapper">
+                            <input :type="showPassword ? 'text' : 'password'" v-model="formData.password"
+                                placeholder="Deje vacío para mantener la actual" class="form-input"
+                                autocomplete="new-password" />
+                            <button type="button" class="password-toggle" @click="showPassword = !showPassword">
+                                <EyeIcon v-if="!showPassword" style="width: 18px; height: 18px;" />
+                                <EyeOffIcon v-else style="width: 18px; height: 18px;" />
+                            </button>
+                        </div>
+                        <span v-if="errors.password" class="error-message">{{ errors.password }}</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmar Nueva Contraseña</label>
+                        <div class="password-input-wrapper">
+                            <input :type="showPasswordConfirm ? 'text' : 'password'" v-model="formData.passwordConfirm"
+                                placeholder="Confirme la nueva contraseña" autocomplete="new-password"
                                 class="form-input" />
                             <button type="button" class="password-toggle"
                                 @click="showPasswordConfirm = !showPasswordConfirm">
@@ -93,6 +122,7 @@ import { ref, watch } from 'vue';
 import XIcon from '@/assets/icons/XIcon.vue';
 import EyeIcon from '@/assets/icons/EyeIcon.vue';
 import EyeOffIcon from '@/assets/icons/EyeOffIcon.vue';
+import { validateUserForm } from '@/utils/validators';
 
 const props = defineProps({
     show: {
@@ -121,29 +151,44 @@ const formData = ref({
     email: '',
     telefono: '',
     rol: '',
-    estado: 'activo',
+    estado: '',
     password: '',
     passwordConfirm: ''
 });
 
 const errors = ref({});
 
-const regexTelefono = /^[26789]\d{7}$/;
-
 // Inicializar formulario cuando cambia el modo o el usuario
 watch([() => props.show, () => props.mode, () => props.user], () => {
     if (props.show) {
         if (props.mode === 'edit' && props.user) {
-            formData.value = {
-                id: props.user.id,
-                nombre: props.user.nombre,
-                email: props.user.email,
-                telefono: props.user.telefono || '',
-                rol: props.user.rol.toLowerCase(),
-                estado: props.user.estado,
-                password: '',
-                passwordConfirm: ''
-            };
+            try {
+                const userRol = (props.user.nombre_rol || props.user.rol || '').toLowerCase();
+                const userEstado = props.user.estado === 1 || props.user.estado === '1' || props.user.estado === 'activo' ? 'activo' : 'inactivo';
+                
+                formData.value = {
+                    id: props.user.id || null,
+                    nombre: props.user.nombre || '',
+                    email: props.user.correo || props.user.email || '',
+                    telefono: props.user.telefono || '',
+                    rol: userRol,
+                    estado: userEstado,
+                    password: '',
+                    passwordConfirm: ''
+                };
+            } catch (error) {
+                console.error('Error al inicializar formulario de edición:', error);
+                formData.value = {
+                    id: null,
+                    nombre: '',
+                    email: '',
+                    telefono: '',
+                    rol: '',
+                    estado: 'activo',
+                    password: '',
+                    passwordConfirm: ''
+                };
+            }
         } else {
             formData.value = {
                 id: null,
@@ -163,51 +208,9 @@ watch([() => props.show, () => props.mode, () => props.user], () => {
 }, { immediate: true });
 
 const validateForm = () => {
-    errors.value = {};
-    let isValid = true;
-
-    if (!formData.value.nombre.trim()) {
-        errors.value.nombre = 'El nombre es requerido';
-        isValid = false;
-    }
-
-    if (!formData.value.email.trim()) {
-        errors.value.email = 'El email es requerido';
-        isValid = false;
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.value.email)) {
-        errors.value.email = 'El email no es válido';
-        isValid = false;
-    }
-
-    if (!formData.value.telefono.trim()) {
-        errors.value.telefono = 'El teléfono es requerido';
-        isValid = false;
-    } else if (!regexTelefono.test(formData.value.telefono.trim())) {
-        errors.value.telefono = 'Teléfono inválido. Debe empezar con 2, 6, 7, 8 o 9 y tener 8 dígitos';
-        isValid = false;
-    }
-
-    if (!formData.value.rol) {
-        errors.value.rol = 'El rol es requerido';
-        isValid = false;
-    }
-
-    if (props.mode === 'create') {
-        if (!formData.value.password) {
-            errors.value.password = 'La contraseña es requerida';
-            isValid = false;
-        } else if (formData.value.password.length < 6) {
-            errors.value.password = 'La contraseña debe tener al menos 6 caracteres';
-            isValid = false;
-        }
-
-        if (formData.value.password !== formData.value.passwordConfirm) {
-            errors.value.passwordConfirm = 'Las contraseñas no coinciden';
-            isValid = false;
-        }
-    }
-
-    return isValid;
+    const validation = validateUserForm(formData.value, props.mode);
+    errors.value = validation.errors;
+    return validation.isValid;
 };
 
 const handleSubmit = () => {
