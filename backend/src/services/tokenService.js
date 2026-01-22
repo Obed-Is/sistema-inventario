@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { UserModel } from '../models/userModel.js';
+import { UserModel } from '../models/user.model.js';
 import { TokenError, RolError } from '../errors/errors.js';
 
 export class TokenService {
@@ -87,7 +87,7 @@ export class TokenService {
             
             return (request[0].correo === correo) ? true : false;
         } catch (error) {
-            throw new TokenError('Acceso denegado', 403);
+            throw new RolError('Acceso denegado', 403);
         }
     }
 }

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { poolDatabase } from '../services/connectionDatabase.js';
 import { TokenMiddleware } from '../middleware/tokenMiddleware.js';
-import { UserController } from '../controllers/userController.js';
+import { UserController } from '../controllers/user.controller.js';
 
 const userRouter = Router();
 

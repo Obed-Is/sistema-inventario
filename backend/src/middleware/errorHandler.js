@@ -1,4 +1,4 @@
-import { DuplicateError, NotFoundError, ValidationError, TokenError, RolError } from "../errors/errors.js";
+import { DuplicateError, NotFoundError, ValidationError, TokenError, RolError, DeleteError } from "../errors/errors.js";
 
 export const errorHandler = (err, req, res, next) => {
 

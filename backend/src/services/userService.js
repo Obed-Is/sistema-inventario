@@ -1,5 +1,5 @@
 import { ValidationError, NotFoundError, DuplicateError, TokenError, DeleteError } from "../errors/errors.js";
-import { UserModel } from "../models/userModel.js";
+import { UserModel } from "../models/user.model.js";
 import { TokenService } from "./tokenService.js";
 import { UserValidate } from "./userValidator.js";
 import bcrypt from "bcrypt";
@@ -129,7 +129,7 @@ export class UserService {
         let limit = 5;
         let offset;
 
-        if (page == 1 || !page) {
+        if (page == 1 || page <= 0) {
             offset = 0;
         } else {
             offset = limit * (page - 1);
