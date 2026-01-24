@@ -17,8 +17,9 @@ export class CategoryService {
             }
 
             const [categories] = await this.categoryModel.getCategoriesFromDb(limit, offset);
+            const [actives_inactives] = await this.categoryModel.getCountActivesInactivesCategory();
 
-            return categories;
+            return [categories, actives_inactives[0].activas, actives_inactives[0].inactivas, actives_inactives[0].total];
         } catch (err) {
             throw err;
         }

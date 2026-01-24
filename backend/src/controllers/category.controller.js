@@ -13,7 +13,13 @@ export class CategoryController {
 
             const categories = await this.categoryService.getCategoriesFromDb(page);
 
-            res.status(200).json({ categorias: categories, success: true });
+            res.status(200).json({ 
+                categorias: categories[0], 
+                activas : categories[1], 
+                inactivas : categories[2], 
+                total : categories[3], 
+                success: true 
+            });
         } catch (err) {
             next(err);
         }

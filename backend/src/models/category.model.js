@@ -17,6 +17,18 @@ export class CategoryModel {
         }
     }
 
+    async getCountActivesInactivesCategory() {
+        try {
+            return this.db.query(`SELECT 
+                SUM(estado = 1) AS activas,
+                SUM(estado = 0) AS inactivas,
+                COUNT(id) AS total
+                FROM categorias WHERE estado != -1`);
+        } catch (err) {
+            throw err;
+        }
+    }
+
     async verifyDuplicateCategory(nombre, id) {
         try {
             return this.db.query(`SELECT nombre FROM categorias WHERE nombre = ? AND estado != -1 AND id != ?`,
