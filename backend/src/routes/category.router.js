@@ -15,9 +15,17 @@ categoryRouter.post('/create',
     (req, res, next) => tokenMiddle.userIsLog(req, res, next),
     (req, res, next) => categoryController.createrCategory(req, res, next));
 
+categoryRouter.post('/search',
+    (req, res, next) => tokenMiddle.userIsLog(req, res, next),
+    (req, res, next) => categoryController.searchCategory(req, res, next));
+
 categoryRouter.put('/:id',
     (req, res, next) => tokenMiddle.userIsLog(req, res, next),
     (req, res, next) => categoryController.updateCategory(req, res, next));
+
+categoryRouter.patch('/:id',
+    (req, res, next) => tokenMiddle.userIsLog(req, res, next),
+    (req, res, next) => categoryController.changeState(req, res, next));
 
 categoryRouter.delete('/:id',
     (req, res, next) => tokenMiddle.userIsLog(req, res, next),

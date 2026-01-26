@@ -54,6 +54,37 @@ export class CategoryController {
         }
     }
 
+    async changeState(req, res, next) {
+        try {
+            if (!req.logIn) return res.status(401).json({ success: false });
+            const { id } = req.params;
+            const request = await this.categoryService.changeStateService(req.body, id);
+
+            if (!request) return res.status(500).json({ success: false, message: 'Error al actualizar la categoria' });
+
+            res.status(200).json({ success: true, message: 'Categoria actualizada' });
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async searchCategory(req, res, next) {
+        try {
+            if (!req.logIn) return res.status(401).json({ success: false });
+            const request = await this.categoryService.searchCategoryService(req.body);
+            console.log(request)
+            if (!request) return res.status(500).json({ 
+                success: false, 
+                message: 'Error al actualizar la categoria', 
+                categorias : [] 
+            });
+
+            res.status(200).json({ success: true, categorias : request });
+        } catch (err) {
+            throw err;
+        }
+    }
+
     async deleteCategory(req, res, next) {
         try {
             if (!req.logIn) return res.status(401).json({ success: false, message: 'Sin acceso' });

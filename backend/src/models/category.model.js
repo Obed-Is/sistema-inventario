@@ -59,6 +59,27 @@ export class CategoryModel {
         }
     }
 
+    async changeStatusInDb(estado, id) {
+        try {
+            return this.db.execute(`UPDATE categorias SET estado = ? WHERE id = ? AND estado != -1`,
+                [estado, id]
+            )
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async searchCategoryInDb(nombre) {
+        try {
+            return this.db.query(`SELECT c.*, COUNT(p.id_categoria) AS 'total_productos' FROM categorias c 
+                LEFT JOIN productos p ON p.id_categoria = c.id AND p.estado != -1 
+                WHERE c.nombre LIKE ? AND c.estado != -1 GROUP BY c.id`,
+                [`%${nombre}%`])
+        } catch (err) {
+            throw err;
+        }
+    }
+
     // el eliminado es simplemente logico logico por si contiene relaciones en la db
     async deleteCategoryFromDb(id) {
         try {

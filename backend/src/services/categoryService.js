@@ -65,6 +65,34 @@ export class CategoryService {
         }
     }
 
+    async changeStateService(campos, id) {
+        try {
+            if (campos.estado.toLowerCase() != 'activo' && campos.estado.toLowerCase() != 'inactivo') {
+                throw new ValidationError('Campos incompletos o invalidos', 422);
+            }
+            const estado = (campos.estado.toLowerCase() == 'activo') ? 1 : 0;
+
+            const [request] = await this.categoryModel.changeStatusInDb(estado, id);
+
+            return request.affectedRows;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+      async searchCategoryService(campos) {
+        try {
+            if (!campos.nombre.trim()) {
+                throw new ValidationError('Campos incompletos o invalidos', 422);
+            }
+            const [request] = await this.categoryModel.searchCategoryInDb(campos.nombre);
+
+            return request;
+        } catch (err) {
+            throw err;
+        }
+    }
+
     async deleteCategoryService(id) {
         try {
             if(!id || id <= 0) {
