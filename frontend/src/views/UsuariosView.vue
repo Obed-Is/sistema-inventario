@@ -41,7 +41,7 @@
                         <th>Teléfono</th>
                         <th>Rol</th>
                         <th>Estado</th>
-                        <th>Fecha Creación</th>
+                        <th>Fecha de creación</th>
                         <th>Última Actualización</th>
                         <th class="actions-column">Acciones</th>
                     </tr>
@@ -185,8 +185,10 @@ const handleSubmit = async (formData) => {
 
             const request = await userApi.createUserApi(newUser);
             if (request.success) {
-                await simpleAlert('Éxito', 'Usuario creado correctamente', 'success');
-                await loadUsers(currentPage.value);
+                simpleAlert('Éxito', 'Usuario creado correctamente', 'success').then(() => {
+                    currentPage.value = 1;
+                    loadUsers(currentPage.value);
+                });
             } else {
                 if (request.message && request.message.toLowerCase().includes('duplicado')) {
                     simpleAlert('Algo salio mal', 'El correo electronico o telefono del usuario ya estan registrados, ingrese uno diferente', 'error');
@@ -212,7 +214,10 @@ const handleSubmit = async (formData) => {
             }
 
             if (response.success) {
-                simpleAlert('Éxito', 'Usuario actualizado correctamente', 'success').then(() => router.go(0))
+                simpleAlert('Éxito', 'Usuario actualizado correctamente', 'success').then(() => {
+                    loadUsers(1)
+                    currentPage.value = 1
+                })
             } else {
                 if (response.message.toLowerCase() == 'usuario duplicado') {
                     simpleAlert('Algo salio mal', 'El correo electronico o telefono del usuario ya estan registrados, ingrese uno diferente', 'error');
@@ -244,7 +249,10 @@ const confirmDelete = async (user) => {
         }
 
         if (request.success) {
-            simpleAlert('Éxito', 'El usuario fue eliminado correctamente', 'success').then(() => router.go(0))
+            simpleAlert('Éxito', 'El usuario fue eliminado correctamente', 'success').then(() => {
+                currentPage.value = 1;
+                loadUsers(1)
+            })
         } else {
             simpleAlert('Error', 'Ocurrio un problema al intentar eliminar el usuario, vuelve a intentarlo de nuevo', 'error');
         }
@@ -449,7 +457,7 @@ onMounted(async () => {
 }
 
 .users-table th {
-    padding: 16px;
+    padding: 12px;
     text-align: left;
     font-weight: 600;
     font-size: 0.875rem;
@@ -460,7 +468,7 @@ onMounted(async () => {
 }
 
 .users-table td {
-    padding: 16px;
+    padding: 8px 12px;
     border-bottom: 1px solid var(--color-border);
     font-size: 0.9375rem;
     color: var(--color-text);

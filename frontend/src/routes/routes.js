@@ -6,6 +6,7 @@ import LoginView from '@/views/LoginView.vue';
 import DashboardLayout from '@/views/DashboardLayout.vue';
 import InicioView from '@/views/InicioView.vue';
 import UsuariosView from '@/views/UsuariosView.vue';
+import CategoriasView from '@/views/CategoriasView.vue';
 
 const userApi = new UserApi();
 
@@ -19,7 +20,7 @@ const routes = [
             { path: '', component: InicioView, meta: { roles: ['administrador', 'bodega', 'cajero'] } },
             { path: 'usuarios', component: UsuariosView, meta: { roles: ['administrador'] } },
             { path: 'productos', component: UsuariosView, meta: { roles: ['administrador', 'bodega'] } },
-            { path: 'categorias', component: UsuariosView, meta: { roles: ['administrador', 'bodega'] } },
+            { path: 'categorias', component: CategoriasView, meta: { roles: ['administrador', 'bodega'] } },
             { path: 'proveedores', component: UsuariosView, meta: { roles: ['administrador', 'bodega'] } },
             { path: 'movimientos', component: UsuariosView, meta: { roles: ['administrador', 'cajero'] } },
             { path: 'reportes', component: UsuariosView, meta: { roles: ['administrador'] } },
