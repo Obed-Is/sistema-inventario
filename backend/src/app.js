@@ -7,6 +7,7 @@ import cors from 'cors';
 import routerAth from './routes/auth/routerAuth.js';
 import userRouter from './routes/users.router.js';
 import categoryRouter from './routes/category.router.js';
+import productRouter from './routes/product.router.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(morgan('dev'));
 app.use('/user', routerAth);
 app.use('/user', userRouter);
 app.use('/category', categoryRouter);
+app.use('/product', productRouter);
 
 //para q express capture el error debe ir de ultimo
 app.use(errorHandler);
