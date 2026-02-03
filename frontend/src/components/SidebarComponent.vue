@@ -25,6 +25,12 @@
                     </ButtonSidebarComponent>
                 </RouterLink>
 
+                <RouterLink v-if="userStore.rol.toLowerCase() === 'administrador' || userStore.rol.toLowerCase() === 'bodega'" to="/panel/ventas" active-class="activo">
+                    <ButtonSidebarComponent titulo="Ventas">
+                        <ProveedorIcon class="icon" />
+                    </ButtonSidebarComponent>
+                </RouterLink>
+
                 <RouterLink v-if="userStore.rol.toLowerCase() === 'administrador' || userStore.rol.toLowerCase() === 'bodega'" to="/panel/categorias" active-class="activo">
                     <ButtonSidebarComponent titulo="Categorias">
                         <CategoryIcon class="icon" />

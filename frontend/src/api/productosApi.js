@@ -166,4 +166,42 @@ export class ProductosApi {
             return { success: false };
         }
     }
+
+    // metodos para el modulo deventas
+    async getProductsForSales() {
+        try {
+            const response = await fetch('/api/product/sales', {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: "include",
+                method: 'GET',
+            });
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.log(error);
+            return { success: false };
+        }
+    }
+
+    async findProductForSales(producto) {
+        try {
+            const response = await fetch('/api/product/sales/find', {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: "include",
+                method: 'POST',
+                body: JSON.stringify({ producto })
+            });
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.log(error);
+            return { success: false };
+        }
+    }
 }

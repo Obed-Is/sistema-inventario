@@ -8,6 +8,7 @@ import InicioView from '@/views/InicioView.vue';
 import UsuariosView from '@/views/UsuariosView.vue';
 import CategoriasView from '@/views/CategoriasView.vue';
 import ProductosView from '@/views/ProductosView.vue';
+import VentasView from '@/views/VentasView.vue';
 
 const userApi = new UserApi();
 
@@ -21,13 +22,14 @@ const routes = [
             { path: '', component: InicioView, meta: { roles: ['administrador', 'bodega', 'cajero'] } },
             { path: 'usuarios', component: UsuariosView, meta: { roles: ['administrador'] } },
             { path: 'productos', component: ProductosView, meta: { roles: ['administrador', 'bodega'] } },
+            { path: 'ventas', component: VentasView, meta: { roles: ['administrador', 'bodega'] } },
             { path: 'categorias', component: CategoriasView, meta: { roles: ['administrador', 'bodega'] } },
             { path: 'proveedores', component: UsuariosView, meta: { roles: ['administrador', 'bodega'] } },
             { path: 'movimientos', component: UsuariosView, meta: { roles: ['administrador', 'cajero'] } },
             { path: 'reportes', component: UsuariosView, meta: { roles: ['administrador'] } },
         ]
     },
-    // { path: '/:pathMatch(.*)*', redirect: '/login' }, // Captura cualquier ruta no definida
+    { path: '/:pathMatch(.*)*', redirect: '/login' }, // Captura cualquier ruta no definida
 ]
 
 const router = createRouter({
