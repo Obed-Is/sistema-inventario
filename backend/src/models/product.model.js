@@ -155,4 +155,59 @@ export class ProductModel {
             throw error;
         }
     }
+
+    async getProductsForSales() {
+        return this.db.query(`
+            SELECT 
+                p.id, 
+                p.codigo, 
+                p.nombre, 
+                p.precio_venta, 
+                p.stock, 
+                u.nombre AS 'medida_unidad' 
+            FROM productos p 
+            INNER JOIN unidades_medida u ON u.id = p.id_unidad
+            INNER JOIN categorias c ON c.id = p.id_categoria
+            WHERE p.estado = 1 AND c.estado = 1
+            ORDER BY p.codigo
+            LIMIT 10 OFFSET 0
+        `);
+    }
+
+    async findProductForSalesInDb(producto) {
+        return this.db.query(`
+                SELECT 
+                    p.id, 
+                    p.codigo, 
+                    p.nombre, 
+                    p.precio_venta, 
+                    p.stock, 
+                    u.nombre AS 'medida_unidad' 
+                FROM productos p 
+                INNER JOIN unidades_medida u ON u.id = p.id_unidad
+                INNER JOIN categorias c ON c.id = p.id_categoria
+                WHERE (p.codigo LIKE ? OR p.nombre LIKE ?) AND p.estado = 1 AND c.estado = 1 
+                ORDER BY p.codigo
+            `, [`%${producto}%`, `%${producto}%`]
+        );
+    }
+
+    async validateStock(id) {
+        return this.db.query(`SELECT stock FROM productos WHERE id = ?`, [id]);
+    }
+
+    async decreaseStock(id, cantidad, conn) {
+        // Se recibe la conexion como parametro para poder usar las transacciones y en caso
+        // de error poder revertir la transaccion(venta)
+        const executor = conn || this.db;
+        try {
+            return executor.execute(`
+                UPDATE productos 
+                SET stock = stock - ? 
+                WHERE id = ?`, [cantidad, id]
+            );
+        } catch (error) {
+            throw error;
+        }
+    }
 }

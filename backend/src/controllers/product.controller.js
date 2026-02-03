@@ -125,6 +125,7 @@ export class ProductController {
 
     async getAllFilter(req, res, next) {
         try {
+            if (!req.logIn) return res.status(401).json({ success: false });
             const { filter } = req.body;
             const { page } = req.params;
             const { value } = req.body;
@@ -135,21 +136,50 @@ export class ProductController {
                 if (!products) return res.status(400).json({ success: false, message: 'Error al obtener los productos' });
 
                 return res.status(200).json({ productos: products, success: true });
-            }else if (filter == 'categoria') {
+            } else if (filter == 'categoria') {
                 const products = await this.productService.getAllFilterCategoryService(value, page);
                 if (!products) return res.status(400).json({ success: false, message: 'Error al obtener los productos' });
 
                 return res.status(200).json({ productos: products, success: true });
-            }else if(filter == 'estado'){
+            } else if (filter == 'estado') {
                 const products = await this.productService.getAllFilterStatusService(value, page);
                 if (!products) return res.status(400).json({ success: false, message: 'Error al obtener los productos' });
 
                 return res.status(200).json({ productos: products, success: true });
             }
-            
+
             return res.status(400).json({ success: false, message: 'El filtro es invalido' });
         } catch (error) {
             next(error)
+        }
+    }
+
+    // Metodos para ventas
+    async getProductForSales(req, res, next) {
+        try {
+            if (!req.logIn) return res.status(401).json({ success: false });
+
+            const products = await this.productService.getProductsForSales();
+
+            res.status(200).json({ success: true, productos: products });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async findProductForSales(req, res, next) {
+        try {
+            if (!req.logIn) return res.status(401).json({ success: false });
+
+            const { producto } = req.body;
+            if (!producto) return res.status(400).json({ success: false, message: 'El nombre o codigo del producto es requerido' });
+
+            const productos = await this.productService.findProductForSales(producto);
+            if (!productos) return res.status(400).json({ success: false, message: 'Error al obtener el producto' });
+
+            res.status(200).json({ success: true, productos: productos });
+        } catch (error) {
+            next(error);
         }
     }
 }

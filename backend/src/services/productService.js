@@ -222,4 +222,25 @@ export class ProductService {
         }
         return { limit, offset };
     }
+
+    // Metodos para ventas
+    async getProductsForSales() {
+        try {
+            const [products] = await this.productModel.getProductsForSales();
+
+            return products ?? [];
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async findProductForSales(producto) {
+        try {
+            const [product] = await this.productModel.findProductForSalesInDb(producto);
+
+            return product ?? [];
+        } catch (error) {
+            throw error;
+        }
+    }
 }
