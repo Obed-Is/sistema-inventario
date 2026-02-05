@@ -37,23 +37,12 @@
                     </ButtonSidebarComponent>
                 </RouterLink>
 
-                <RouterLink v-if="userStore.rol.toLowerCase() === 'administrador' || userStore.rol.toLowerCase() === 'bodega'" to="/panel/proveedores" active-class="activo">
-                    <ButtonSidebarComponent titulo="Proveedores">
-                        <ProveedorIcon class="icon" />
-                    </ButtonSidebarComponent>
-                </RouterLink>
-
-                <RouterLink v-if="userStore.rol.toLowerCase() === 'administrador' || userStore.rol.toLowerCase() === 'cajero'"  to="/panel/movimientos" active-class="activo">
-                    <ButtonSidebarComponent titulo="Movimientos">
-                        <MovIcon class="icon" />
-                    </ButtonSidebarComponent>
-                </RouterLink>
-
-                <RouterLink v-if="userStore.rol.toLowerCase() === 'administrador'"  to="/panel/reportes" active-class="activo">
+                <!-- implementar esto a futuro  -->
+                <!-- <RouterLink v-if="userStore.rol.toLowerCase() === 'administrador'"  to="/panel/reportes" active-class="activo">
                     <ButtonSidebarComponent titulo="Reportes">
                         <ReportIcon class="icon" />
                     </ButtonSidebarComponent>
-                </RouterLink>
+                </RouterLink> -->
             </div>
         </div>
 
@@ -84,8 +73,6 @@ import CategoryIcon from '@/assets/icons/CategoryIcon.vue';
 import ProductIcon from '@/assets/icons/ProductIcon.vue';
 import ButtonSidebarComponent from '@/components/ButtonSidebarComponent.vue';
 import ProveedorIcon from '@/assets/icons/ProveedorIcon.vue';
-import MovIcon from '@/assets/icons/MovIcon.vue';
-import ReportIcon from '@/assets/icons/ReportIcon.vue';
 import { RouterLink, useRouter } from 'vue-router';
 import { useUserStore } from '@/utils/UserStore';
 import { UserApi } from '@/api/usersApi';
