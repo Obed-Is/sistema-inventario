@@ -158,4 +158,40 @@ export class UserApi {
             return { success: false };
         }
     }
+
+    async panelForAdmin() {
+        try {
+            const response = await fetch('/api/panel/admin', {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                method: 'GET',
+                credentials: "include",
+            })
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.log(error)
+            return { success: false };
+        }
+    }
+
+    async panelForBodega() {
+        try {
+            const response = await fetch('/api/panel/bodega', {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                method: 'GET',
+                credentials: "include",
+            })
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.log(error)
+            return { success: false };
+        }
+    }
 }
