@@ -10,20 +10,17 @@ export class UserController {
             const userFinal = await this.service.newUser(req);
 
             if (!userFinal) {
-                console.log('Ocurrio un error al crear el usuario en la base de datos');
                 return res.status(500).json({ success: false, message: 'Ocurrio un error interno' })
             }
 
             return res.status(201).json({ success: true, message: 'Usuario creado' });
         } catch (err) {
-            console.log('Error recibido en el controlador: ', err)
             next(err);
         }
     }
 
     async loginUser(req, res, next) {
         try {
-            console.log('La sesion del usuario es valida? ', req.logIn);
 
             if (req.logIn) {
                 return res.status(200).json({ logIn: true, message: 'El usuario ya esta logueado' });
@@ -90,7 +87,6 @@ export class UserController {
             }
             res.status(200).json({ success: true, message: userUpdated.message });
         } catch (err) {
-            console.log('Error recibido en el controlador al actualizar el usuario: ', err)
             next(err);
         }
     }

@@ -316,7 +316,6 @@ const loadCategories = async (pagina) => {
         categoriesCount.value = request.total;
         return categories.value
     } catch (err) {
-        console.log(err);
         return;
     }
 }

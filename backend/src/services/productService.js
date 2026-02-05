@@ -99,7 +99,6 @@ export class ProductService {
             const codeParser = codigo.toString().padStart(4, '0');
 
             const [duplicate] = await this.productModel.verifyDuplicateProduct(codeParser, nombre, id);
-            console.log(duplicate);
             if (duplicate.length) {
                 throw new DuplicateError('Producto duplicado el codigo o nombre ya existen', 409);
             }

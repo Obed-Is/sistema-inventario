@@ -136,7 +136,6 @@ const getBodegaData = async () => {
         }))
 
     } catch (error) {
-        console.error('Error al obtener datos del panel:', error);
         dataError();
     }
 }

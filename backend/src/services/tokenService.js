@@ -55,7 +55,6 @@ export class TokenService {
 
             return true;
         } catch (err) {
-            console.log('Error en el servicio de token, especificamente validRefreshToken', err);
             throw new TokenError('Ocurrio un error en los tokens', 500);
         }
 

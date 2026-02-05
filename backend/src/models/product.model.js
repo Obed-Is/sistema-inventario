@@ -5,7 +5,6 @@ export class ProductModel {
 
     async getProductsFromDb(limit, offset) {
         try {
-            console.log(limit, offset);
             return this.db.query(`
                 SELECT 
                     p.id, p.codigo, p.nombre, p.costo_compra, p.precio_venta, p.estado, 

@@ -13,7 +13,6 @@ export class CategoryApi {
 
             return data;
         } catch (error) {
-            console.log(error)
             return { success: false };
         }
     }
@@ -32,7 +31,6 @@ export class CategoryApi {
 
             return data;
         } catch (error) {
-            console.log(error)
             return { success: false };
         }
     }
@@ -51,7 +49,6 @@ export class CategoryApi {
 
             return data;
         } catch (error) {
-            console.log(error)
             return { success: false };
         }
     }
@@ -70,7 +67,6 @@ export class CategoryApi {
 
             return data;
         } catch (error) {
-            console.log(error)
             return { success: false };
         }
     }
@@ -89,7 +85,6 @@ export class CategoryApi {
 
             return data;
         } catch (error) {
-            console.log(error)
             return { success: false };
         }
     }
@@ -107,7 +102,6 @@ export class CategoryApi {
 
             return data;
         } catch (error) {
-            console.log(error)
             return { success: false };
         }
     }

@@ -93,7 +93,6 @@ export class UserService {
                 throw new TokenError('Error en guardar los tokens para la sesion', 500)
             }
         }
-        console.log('Usuario recien logueado: ', userLog)
         delete userLog.id;
 
         return {
@@ -120,7 +119,6 @@ export class UserService {
             const [result] = await this.userModel.invalidateTokenFromDb(id);
             return await result.affectedRows;
         } catch (err) {
-            console.log('Ocurrio un error al invalidar la sesion(logout): ', err)
             throw new TokenError('Ocurrio un error interno', 500)
         }
     }
@@ -147,7 +145,6 @@ export class UserService {
 
             return users;
         } catch (err) {
-            console.log('Ocurrio un error al llamar la informacion de todos los usuarios: ', err);
             throw err;
         }
     }
@@ -177,7 +174,6 @@ export class UserService {
             }
 
             const [userUpdated] = await this.userModel.updateUserInDb(id, nombre, correo, telefono, getIdRol[0].id, estado);
-            console.log('Usuario actualizado: ', userUpdated.affectedRows)
             if (!userUpdated.affectedRows) {
                 throw new NotFoundError('No se pudo actualizar el usuario', 404);
             }
@@ -196,7 +192,6 @@ export class UserService {
             if (!id) return { success: false };
 
             const [userDelete] = await this.userModel.deleteUserInDb(id);
-            console.log(userDelete)
             if (!userDelete.affectedRows) {
                 throw new DeleteError('No se pudo eliminar el usuario', 409);
             }

@@ -34,7 +34,6 @@
                             <option value="">Seleccione un rol</option>
                             <option value="administrador">Administrador</option>
                             <option value="bodega">Bodega</option>
-                            <option value="ventas">Ventas</option>
                         </select>
                         <span v-if="errors.rol" class="error-message">{{ errors.rol }}</span>
                     </div>
@@ -177,7 +176,6 @@ watch([() => props.show, () => props.mode, () => props.user], () => {
                     passwordConfirm: ''
                 };
             } catch (error) {
-                console.error('Error al inicializar formulario de edición:', error);
                 formData.value = {
                     id: null,
                     nombre: '',
@@ -215,7 +213,6 @@ const validateForm = () => {
 
 const handleSubmit = () => {
     if (!validateForm()) {
-        console.log('Validación fallida:', errors.value);
         return;
     }
     emit('submit', { ...formData.value });

@@ -15,7 +15,6 @@ export class PanelService {
     async getInfoPanelForBodega() {
         const [resultSetBodega] = await this.panelModel.getInfoPanelForBodega();
         const infoBodega = this.#formatInfoBodega(resultSetBodega);
-        console.log(infoBodega);
         return infoBodega;
     }
 

@@ -42,7 +42,6 @@ export class CategoryService {
 
             return request.affectedRows;
         } catch (err) {
-            console.log(err)
             throw err;
         }
     }

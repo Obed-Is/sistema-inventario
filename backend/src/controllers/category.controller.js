@@ -72,7 +72,6 @@ export class CategoryController {
         try {
             if (!req.logIn) return res.status(401).json({ success: false });
             const request = await this.categoryService.searchCategoryService(req.body);
-            console.log(request)
             if (!request) return res.status(500).json({ 
                 success: false, 
                 message: 'Error al actualizar la categoria', 

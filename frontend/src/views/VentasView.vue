@@ -195,7 +195,6 @@ const onSearchKeypress = async (event) => {
             products.value = []
         }
     } catch (error) {
-        console.error('Error searching products:', error)
         products.value = []
     } finally {
         loading.value = false
@@ -220,7 +219,6 @@ const loadInitialProducts = async () => {
             products.value = []
         }
     } catch (error) {
-        console.error('Error loading products:', error)
         products.value = []
     } finally {
         loading.value = false

@@ -3,7 +3,6 @@ import { DuplicateError, NotFoundError, ValidationError, TokenError, RolError, D
 export const errorHandler = (err, req, res, next) => {
 
     if (err instanceof ValidationError) {
-        console.log("ESTE ES UN ERROR DE VALIDACION");
         return res.status(err.status).json({ success: false, message: err.message });
     }
 
@@ -27,6 +26,5 @@ export const errorHandler = (err, req, res, next) => {
         return res.status(err.status).json({ success: false, message: err.message });
     }
     
-    console.log('Error no capturado: ', err)
     return res.status(500).json({ success: false, message: 'Error interno' });
 }

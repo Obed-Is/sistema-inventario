@@ -238,7 +238,6 @@ const confirmDelete = async (user) => {
         `¿Estás seguro de que deseas eliminar a ${user.nombre}? Esta accion no se puede deshacer.`,
         'warning'
     );
-    console.log(user)
     if (result.isConfirmed) {
         const request = await userApi.deleteUserApi(user.id);
 
@@ -297,7 +296,6 @@ const loadUsers = async (page = 1) => {
             hasMoreData.value = false;
         }
     } catch (error) {
-        console.error('Error al cargar usuarios:', error);
         users.value = [];
         hasMoreData.value = false;
     } finally {

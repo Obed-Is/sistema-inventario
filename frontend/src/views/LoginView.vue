@@ -79,7 +79,6 @@ async function validacionCampos() {
             clearInterval(loaderInterval);
 
             if (response.logIn) {
-                console.log(response)
                 //uso de pinia para mandar y guardar los datos
                 userStore.loginStore(response.userData);
                 return router.push('/panel');

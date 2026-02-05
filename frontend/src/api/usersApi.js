@@ -12,7 +12,6 @@ export class UserApi {
 
             return await request.json();
         } catch (error) {
-            console.log('Error en el fetch de inicio de sesion: ', error)
             return { success: false };
         }
     }
@@ -29,7 +28,6 @@ export class UserApi {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.log('Error en el fetch de comprobar la sesion: ', error)
             return false;
         }
     }
@@ -48,7 +46,6 @@ export class UserApi {
 
             return true;
         } catch (error) {
-            console.log('Error al cerrar la sesion del usuario: ', error);
             return false;
         }
     }
@@ -58,7 +55,6 @@ export class UserApi {
             return false;
         }
 
-        console.log(data)
         try {
             const response = await fetch('/api/user/create', {
                 headers: {
@@ -71,7 +67,6 @@ export class UserApi {
 
             return await response.json();
         } catch (error) {
-            console.log(error)
             return false;
         }
     }
@@ -99,7 +94,6 @@ export class UserApi {
 
             return data;
         } catch (error) {
-            console.log(error)
             return { success: false, error: error.message };
         }
     }
@@ -127,7 +121,6 @@ export class UserApi {
 
             return data;
         } catch (error) {
-            console.log(error)
             return { success: false };
         }
     }
@@ -154,7 +147,6 @@ export class UserApi {
 
             return data;
         } catch (error) {
-            console.log(error)
             return { success: false };
         }
     }
@@ -172,7 +164,6 @@ export class UserApi {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.log(error)
             return { success: false };
         }
     }
@@ -190,7 +181,6 @@ export class UserApi {
             const data = await response.json();
             return data;
         } catch (error) {
-            console.log(error)
             return { success: false };
         }
     }
