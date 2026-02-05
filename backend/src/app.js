@@ -9,6 +9,7 @@ import userRouter from './routes/users.router.js';
 import categoryRouter from './routes/category.router.js';
 import productRouter from './routes/product.router.js';
 import salesRouter from './routes/sales.router.js';
+import panelRouter from './routes/panel.router.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 
 app.use('/user', routerAth);
+app.use('/panel', panelRouter);
 app.use('/user', userRouter);
 app.use('/category', categoryRouter);
 app.use('/product', productRouter);
