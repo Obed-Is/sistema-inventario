@@ -118,8 +118,8 @@ const getBodegaData = async () => {
         }
         const data = response.infoPanel;
 
-        totalProducts.value = data.cantidad_productos
-        totalCategories.value = data.categorias_totales
+        totalProducts.value = data.cantidad_productos ?? 0
+        totalCategories.value = data.categorias_totales ?? 0
 
         topProducts.value = data.mas_vendidos.map((product) => ({
             name: product.nombre,
