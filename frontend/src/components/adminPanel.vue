@@ -87,7 +87,7 @@
                 <div class="sales-grid-unified">
                     <div class="sales-column">
                         <h3>Ventas Semanales</h3>
-                        <div class="sales-amount">{{ formatCurrency(parseFloat(weeklySales)) }}</div>
+                        <div class="sales-amount">{{ formatCurrency(parseFloat(weeklySales))}}</div>
                         <div class="sales-details">
                             <div class="sales-item">
                                 <span class="label">Transacciones totales</span>
@@ -186,16 +186,16 @@ const getPanelData = async () => {
             return;
         }
         const data = response.infoPanel;
-        totalInventoryValue.value = parseFloat(data.general_producto.total_inventario)
-        totalProducts.value = data.general_producto.cantidad_productos
-        totalUsers.value = data.usuarios_totales
-        totalCategories.value = data.categorias_totales
+        totalInventoryValue.value = parseFloat(data.general_producto.total_inventario ?? 0)
+        totalProducts.value = data.general_producto.cantidad_productos ?? 0
+        totalUsers.value = data.usuarios_totales ?? 0
+        totalCategories.value = data.categorias_totales ?? 0
 
-        weeklySales.value = parseFloat(data.reporte_semana.ventas_semana)
-        weeklyTransactions.value = data.reporte_semana.ventas_totales_semana
+        weeklySales.value = parseFloat(data.reporte_semana.ventas_semana ?? 0)
+        weeklyTransactions.value = data.reporte_semana.ventas_totales_semana ?? 0
 
-        monthlySales.value = parseFloat(data.reporte_mes.ventas_mes)
-        monthlyTransactions.value = data.reporte_mes.ventas_totales_mes
+        monthlySales.value = parseFloat(data.reporte_mes.ventas_mes ?? 0)
+        monthlyTransactions.value = data.reporte_mes.ventas_totales_mes ?? 0
 
         topProducts.value = data.mas_vendidos.map((product) => ({
             id: product.id,
