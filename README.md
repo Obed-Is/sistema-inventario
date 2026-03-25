@@ -36,7 +36,7 @@ Poner en práctica conocimientos y habilidades en:
 
 ---
 
-## Arquitectura del proyecto
+## Arquitectura backend
 
 El proyecto sigue el patrón **MVC (Model–View–Controller)** complementado con una **capa de servicios** para una mejor organización de la lógica de negocio.
 
@@ -107,23 +107,28 @@ SALT_ROUND_HASH=10
 SECRET_KEY_JWT=
 ```
 ## Instalacion de dependencias
-- Acceder a la carpeta **Backend** y ejectutar los siguientes comandos para instalar e inicializar el servidor
+
+El proyecto esta configurado como un ***monorepo*** que contiene 2 servicios uno ***Frontend y Backend***. Estos puden ser ejecutados de la seguiente forma.
+- Despues de haber seguido y hecho la configuracion de la seccion anterior seguir estos pasos.
+
+**Dependencias**
+- Ubícate en la carpeta raíz del proyecto (sistema_inventario) y ejecuta:
 ```bash
-cd Backend
-npm install
-npm run dev
-```
-- Acceder a la carpeta **Frontend** y ejecutar los siguientes comandos para instalar e inicializar el frontend
-```bash
-cd Frontend
-npm install
-npm run dev
+ npm install
 ```
 
-- Una vez iniciados el backend y el frontend, acceder a la aplicación desde el navegador
-```text
-http://localhost:5173/login
+**Ejecucion de los servicios**
+- En la terminal ejecuta
+```bash
+npm run dev:backend
 ```
+- Abre una nueva terminal (en la misma carpeta raíz) y ejecuta:
+```bash
+npm run dev:frontend
+```
+***NOTA***
+- Ambos servicios deben ejecutarse en paralelo.
+- Asegúrate de tener correctamente configuradas las variables de entorno si el proyecto las utiliza.
 
 ## Credenciales de acceso
 El sistema incluye usuarios de prueba preconfigurados para acceder a todas sus funcionalidades
