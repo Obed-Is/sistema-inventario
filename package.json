@@ -1,0 +1,25 @@
+{
+  "name": "sistema_inventario",
+  "version": "1.0.0",
+  "description": "Sistema de inventario y ventas orientado a **pequeñas y medianas empresas**, diseñado para facilitar y agilizar las operaciones diarias de gestión de productos y ventas, con control de usuarios y roles.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Obed-Is/sistema-inventario.git"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+   "scripts": {
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Obed-Is/sistema-inventario/issues"
+  },
+  "homepage": "https://github.com/Obed-Is/sistema-inventario#readme"
+}
