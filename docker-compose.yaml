@@ -1,0 +1,40 @@
+services:
+  database:
+    image: mysql:8.0
+    container_name: sv-database
+    user: root
+    environment:
+      - MYSQL_ROOT_PASSWORD=Sistema123_
+      - MYSQL_DATABASE=sistema_inventario
+    volumes:
+      - "./sistema_inventario_db.sql:/docker-entrypoint-initdb.d/sistema_inventario_db.sql"
+    ports:
+    # se usa otro puerto por si en local tiene un servicio de mysql ejecutandose
+      - "3307:3306"
+  backend:
+    build: ./backend/
+    image: servicio-backend
+    container_name: sv-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - SERVER_PORT=3000
+      - DB_USER=root
+      - DB_PASSW=Sistema123_
+      - DB_HOST=database
+      # docker usa el puerto del contenedor no del host por eso se deja el puerto normal
+      - DB_PORT=3306
+      - DB_NAME=sistema_inventario
+      - SALT_ROUND_HASH=10
+      - SECRET_KET_JWT='sistema_secreto_llave_firma_503'
+    depends_on:
+      - database
+  frontend:
+    build: ./frontend/
+    image: servicio-frontend
+    container_name: sv-frontend
+    ports:
+      - "5173:5173"
+    # command: npm run dev -- --host 0.0.0.0
+    depends_on:
+      - backend
