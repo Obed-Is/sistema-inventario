@@ -4,7 +4,7 @@ Sistema de inventario y ventas orientado a **pequeñas y medianas empresas**, di
 
 El sistema permite administrar **usuarios, productos, categorías y ventas**, incorporando un sistema de roles donde el **administrador** tiene control total del sistema y el rol **bodega** cuenta con permisos limitados según su función operativa.
 
-Este proyecto fue desarrollado como práctica y demostración de habilidades en **desarrollo Backend**, aplicando buenas prácticas de arquitectura, seguridad y diseño de software.
+Este proyecto fue desarrollado como práctica y demostración de habilidades en **desarrollo Full Stack**, aplicando buenas prácticas de arquitectura, seguridad y diseño de software.
 
 ---
 
@@ -12,6 +12,7 @@ Este proyecto fue desarrollado como práctica y demostración de habilidades en 
 
 Poner en práctica conocimientos y habilidades en:
 
+### Backend
 - Desarrollo de APIs REST con **Node.js y Express**
 - Seguridad y manejo de sesiones con **JWT**
 - Diseño y gestión de **bases de datos relacionales**
@@ -21,6 +22,12 @@ Poner en práctica conocimientos y habilidades en:
 - Manejo adecuado de códigos de estado HTTP
 - Validaciones y manejo centralizado de errores
 
+### Frontend
+- Desarrollo de una interfaz web funcional para el consumo de la API
+- Implementación de flujos de autenticación (login y manejo de sesión)
+- Gestión de estado en el frontend utilizando Vue.js y Pinia
+- Consumo de endpoints protegidos mediante tokens JWT
+- Integración frontend–backend enfocada en la funcionalidad y la experiencia de uso
 ---
 
 ##  Tecnologías utilizadas
@@ -30,6 +37,8 @@ Poner en práctica conocimientos y habilidades en:
 | JavaScript | Lenguaje de programación |
 | Node.js (ESM) | Entorno de ejecución |
 | Express.js | Framework Backend |
+| Vue.js | Framework Frontend |
+| Pinia | Gestión de estado en el frontend |
 | MySQL | Base de datos relacional |
 | JWT (JSON Web Tokens) | Autenticación y manejo de sesiones |
 | Git / GitHub | Control de versiones |
@@ -61,8 +70,32 @@ El proyecto sigue el patrón **MVC (Model–View–Controller)** complementado c
 
 ---
 
+## Arquitectura **frontend** del proyecto
+
+### Capas del sistema
+
+- **Api**  
+  Capa de servicios encargada del consumo de la API REST del backend, centralizando la comunicación HTTP y separando la lógica de red de los componentes.
+
+- **Assets**  
+  Archivos estaticos y CSS principal
+
+- **Components**  
+  Contiene todos los componentes reutilizables del sistema 
+
+- **Routes**  
+  Contiene el archivo de configuracion de rutas del frontend definiendo que vistas implementar 
+
+- **Utils**  
+  Almacena funciones reutilizables
+
+- **Views**  
+  Contiene todas las vistas y modulos principales del sistema 
+  
+
 ## Estructura del proyecto
 
+### Backend
 ```text
 src/
 ├── controllers/
@@ -72,6 +105,20 @@ src/
 ├── routes/
 ├── services/
 └── app.js
+```
+
+### Frontend
+```text
+src/
+├── api/
+├── assets/
+├── components/
+├── routes/
+├── utils/
+├── views/
+└── app.vue
+└── main.vue
+
 ```
 
 # Instalacion y configuracion
