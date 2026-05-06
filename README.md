@@ -8,9 +8,7 @@ Este proyecto fue desarrollado como práctica y demostración de habilidades en 
 
 ---
 
-## Objetivo del proyecto
-
-Poner en práctica conocimientos y habilidades en:
+## Estructura del proyecto
 
 ### Backend
 - Desarrollo de APIs REST con **Node.js y Express**
