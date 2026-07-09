@@ -4,7 +4,7 @@ Sistema de inventario y ventas orientado a **pequeñas y medianas empresas**, di
 
 El sistema permite administrar **usuarios, productos, categorías y ventas**, incorporando un sistema de roles donde el **administrador** tiene control total del sistema y el rol **bodega** cuenta con permisos limitados según su función operativa.
 
-Este proyecto fue desarrollado como práctica y demostración de habilidades en **desarrollo Full Stack**, aplicando buenas prácticas de arquitectura, seguridad y diseño de software.
+Este proyecto fue desarrollado de manera práctica y demostración de habilidades en **desarrollo**, aplicando buenas prácticas de arquitectura, seguridad y diseño de software.
 
 ---
 
